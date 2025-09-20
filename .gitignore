@@ -1,4 +1,5 @@
 # Logs
+GC
 node_modules
 logs
 *.log

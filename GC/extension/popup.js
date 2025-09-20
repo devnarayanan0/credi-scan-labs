@@ -35,7 +35,19 @@ scanBtn.addEventListener("click", async () => {
           })
         });
 
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error('API error:', errorText);
+          resultDiv.innerText = `API error: ${errorText}`;
+          return;
+        }
+
         const data = await response.json();
+        if (!data.choices || !data.choices[0] || !data.choices[0].message) {
+          console.error('Unexpected API response:', data);
+          resultDiv.innerText = 'Unexpected API response.';
+          return;
+        }
         const answer = data.choices[0].message.content;
         resultDiv.innerText = answer;
 
