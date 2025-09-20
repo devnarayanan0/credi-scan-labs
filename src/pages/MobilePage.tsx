@@ -1,0 +1,216 @@
+import { motion } from "framer-motion";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { CredibilityCard } from "@/components/CredibilityCard";
+import { Search, Sparkles, Loader2 } from "lucide-react";
+
+const MobilePage = () => {
+  const [url, setUrl] = useState("");
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [results, setResults] = useState<any>(null);
+
+  const handleAnalyze = async () => {
+    if (!url) return;
+    
+    setIsAnalyzing(true);
+    
+    // Simulate API call
+    setTimeout(() => {
+      setResults({
+        credibility: Math.random() > 0.3 ? (Math.random() > 0.5 ? "high" : "medium") : "low",
+        percentage: Math.floor(Math.random() * 30) + 70,
+        analysis: {
+          sources: Math.floor(Math.random() * 10) + 5,
+          sentiment: Math.random() > 0.5 ? "positive" : "neutral",
+          factChecked: Math.random() > 0.3,
+        }
+      });
+      setIsAnalyzing(false);
+    }, 3000);
+  };
+
+  const getCredibilityData = () => {
+    if (!results) return null;
+    
+    const { credibility, percentage } = results;
+    
+    switch (credibility) {
+      case "high":
+        return {
+          title: "Highly Credible",
+          description: "This article comes from verified sources with strong factual backing.",
+        };
+      case "medium":
+        return {
+          title: "Moderately Credible",
+          description: "Article shows mixed signals. Some claims may need additional verification.",
+        };
+      case "low":
+        return {
+          title: "Low Credibility",
+          description: "Multiple red flags detected. This article may contain misinformation.",
+        };
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-hero relative overflow-hidden">
+      <div className="particles" />
+      
+      <div className="pt-32 pb-20 px-6">
+        <div className="max-w-md mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="text-center mb-12"
+          >
+            <h1 className="text-4xl font-bold mb-4">
+              <span className="gradient-text">Mobile Checker</span>
+            </h1>
+            <p className="text-muted-foreground">
+              Paste any news article URL to verify its credibility
+            </p>
+          </motion.div>
+
+          {/* Input Card */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="card-glass mb-8"
+          >
+            <div className="space-y-4">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                <Input
+                  placeholder="https://example.com/news-article"
+                  value={url}
+                  onChange={(e) => setUrl(e.target.value)}
+                  className="pl-10 bg-muted/50 border-border focus:border-primary transition-colors"
+                  disabled={isAnalyzing}
+                />
+              </div>
+              
+              <Button 
+                onClick={handleAnalyze}
+                disabled={!url || isAnalyzing}
+                className="w-full btn-hero relative overflow-hidden"
+              >
+                {isAnalyzing ? (
+                  <>
+                    <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                    Analyzing Article...
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="w-5 h-5 mr-2" />
+                    Scan for Credibility
+                  </>
+                )}
+                
+                {isAnalyzing && (
+                  <motion.div
+                    className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
+                    animate={{ x: ["-100%", "100%"] }}
+                    transition={{ 
+                      duration: 1.5, 
+                      repeat: Infinity, 
+                      ease: "easeInOut" 
+                    }}
+                  />
+                )}
+              </Button>
+            </div>
+          </motion.div>
+
+          {/* Loading Animation */}
+          {isAnalyzing && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="card-glass text-center mb-8"
+            >
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                className="inline-block mb-4"
+              >
+                <Sparkles className="w-12 h-12 text-primary" />
+              </motion.div>
+              <p className="text-muted-foreground">
+                AI is analyzing the article...
+              </p>
+            </motion.div>
+          )}
+
+          {/* Results */}
+          {results && !isAnalyzing && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5 }}
+              className="space-y-6"
+            >
+              <CredibilityCard
+                credibility={results.credibility}
+                percentage={results.percentage}
+                title={getCredibilityData()?.title || ""}
+                description={getCredibilityData()?.description || ""}
+              />
+
+              {/* Additional Analysis */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.3 }}
+                className="card-glass"
+              >
+                <h3 className="text-lg font-semibold mb-4">Analysis Details</h3>
+                <div className="space-y-3 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Sources Checked:</span>
+                    <span className="font-medium">{results.analysis.sources}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Sentiment:</span>
+                    <span className="font-medium capitalize">{results.analysis.sentiment}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Fact-Checked:</span>
+                    <span className="font-medium">
+                      {results.analysis.factChecked ? "✅ Yes" : "❌ No"}
+                    </span>
+                  </div>
+                </div>
+              </motion.div>
+
+              {/* Try Another */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.5, delay: 0.5 }}
+              >
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    setUrl("");
+                    setResults(null);
+                  }}
+                  className="w-full glass border-primary/50 hover:bg-primary/10"
+                >
+                  Check Another Article
+                </Button>
+              </motion.div>
+            </motion.div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default MobilePage;

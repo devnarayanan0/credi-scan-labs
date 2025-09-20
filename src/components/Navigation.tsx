@@ -1,0 +1,56 @@
+import { motion } from "framer-motion";
+import { Link, useLocation } from "react-router-dom";
+import { Sparkles, Smartphone, Globe } from "lucide-react";
+
+export const Navigation = () => {
+  const location = useLocation();
+
+  const navItems = [
+    { path: "/", label: "Home", icon: Sparkles },
+    { path: "/mobile", label: "Mobile", icon: Smartphone },
+    { path: "/extension", label: "Extension", icon: Globe },
+  ];
+
+  return (
+    <motion.nav 
+      className="fixed top-6 left-1/2 transform -translate-x-1/2 z-50 glass-strong rounded-2xl px-6 py-3"
+      initial={{ y: -100, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.6 }}
+    >
+      <div className="flex items-center space-x-1">
+        {navItems.map((item) => {
+          const Icon = item.icon;
+          const isActive = location.pathname === item.path;
+          
+          return (
+            <Link
+              key={item.path}
+              to={item.path}
+              className="relative px-4 py-2 rounded-xl transition-all duration-300"
+            >
+              <motion.div
+                className="flex items-center space-x-2"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <Icon className={`w-4 h-4 ${isActive ? 'text-primary' : 'text-muted-foreground'}`} />
+                <span className={`text-sm font-medium ${isActive ? 'text-primary' : 'text-muted-foreground'}`}>
+                  {item.label}
+                </span>
+              </motion.div>
+              
+              {isActive && (
+                <motion.div
+                  className="absolute inset-0 bg-primary/10 rounded-xl border border-primary/20"
+                  layoutId="activeTab"
+                  transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                />
+              )}
+            </Link>
+          );
+        })}
+      </div>
+    </motion.nav>
+  );
+};
