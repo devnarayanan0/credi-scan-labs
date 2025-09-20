@@ -2,10 +2,27 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Link, useLocation } from "react-router-dom";
 import { Sparkles, Smartphone, Globe, Menu, X } from "lucide-react";
 import { useState } from "react";
+import { useEffect } from "react";
 
 export const Navigation = () => {
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [showNavbar, setShowNavbar] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      if (currentScrollY > lastScrollY && currentScrollY > 40) {
+        setShowNavbar(false); // scrolling down
+      } else {
+        setShowNavbar(true); // scrolling up
+      }
+      setLastScrollY(currentScrollY);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [lastScrollY]);
 
   const navItems = [
     { path: "/", label: "Home", icon: Sparkles },
@@ -20,23 +37,23 @@ export const Navigation = () => {
   return (
     <>
       {/* Desktop Navigation */}
-      <motion.nav 
-        className="fixed top-6 left-1/2 transform -translate-x-1/2 z-50 glass-strong rounded-2xl px-6 py-3 hidden md:block"
-        initial={{ y: -100, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.6 }}
-      >
-        <div className="flex items-center justify-center space-x-1">
-          {navItems.map((item) => {
-            const Icon = item.icon;
-            const isActive = location.pathname === item.path;
-            
-            return (
-              <Link
-                key={item.path}
-                to={item.path}
-                className="relative px-4 py-2 rounded-xl transition-all duration-300"
-              >
+        <div className="fixed top-14 left-0 w-full z-50 hidden md:flex justify-center">
+          <motion.nav 
+            className="glass-strong rounded-2xl px-6 py-3 w-max mx-auto shadow-2xl shadow-grey/40"
+            initial={{ y: -100, opacity: 0 }}
+            animate={showNavbar ? { y: 0, opacity: 1 } : { y: -100, opacity: 0 }}
+            transition={{ type: 'tween', ease: showNavbar ? 'easeOut' : 'easeIn', duration: 0.4 }}
+          >
+            <div className="flex items-center justify-center space-x-1">
+              {navItems.map((item) => {
+                const Icon = item.icon;
+                const isActive = location.pathname === item.path;
+                return (
+                  <Link
+                    key={item.path}
+                    to={item.path}
+                    className="relative px-4 py-2 rounded-xl transition-all duration-300"
+                  >
                 <motion.div
                   className="flex items-center space-x-2"
                   whileHover={{ scale: 1.05 }}
@@ -58,8 +75,9 @@ export const Navigation = () => {
               </Link>
             );
           })}
+            </div>
+          </motion.nav>
         </div>
-      </motion.nav>
 
       {/* Mobile Navigation */}
       <motion.nav 

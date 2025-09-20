@@ -1,0 +1,1 @@
+console.log("CrediScan content script active!");

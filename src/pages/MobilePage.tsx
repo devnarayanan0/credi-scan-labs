@@ -57,7 +57,7 @@ const MobilePage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-hero relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-hero relative overflow-hidden ">
       <div className="particles" />
       
       <div className="pt-32 pb-20 px-6">

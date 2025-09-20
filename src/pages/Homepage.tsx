@@ -35,8 +35,8 @@ const Homepage = () => {
       {/* Hero Section */}
       <HeroSection />
 
-      {/* How It Works Section */}
-      <section className="py-20 px-6">
+  {/* How It Works Section */}
+  <section className="pt-0 pb-20 px-6">
         <div className="max-w-6xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -46,7 +46,7 @@ const Homepage = () => {
             className="text-center mb-16"
           >
             <h2 className="text-4xl md:text-5xl font-bold mb-6">
-              How It <span className="gradient-text">Works</span>
+              How It Works
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
               Our AI-powered system analyzes news articles in three simple steps
@@ -102,9 +102,9 @@ const Homepage = () => {
             whileInView={{ opacity: 1 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            className="gradient-text text-lg font-medium"
+            className="-black/40 text-lg font-medium"
           >
-            Built with AI • Powered by Truth • Designed for Everyone
+            <a href="https://nexbitx.vercel.app/" className="gradient-text shadow-grey/400">&copy;NexBit</a> 2025 Build
           </motion.p>
         </div>
       </footer>

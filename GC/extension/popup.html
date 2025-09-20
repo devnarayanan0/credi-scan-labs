@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>CrediScan Labs</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="popup-container">
+    <h2>CrediScan</h2>
+    <p>Check the credibility of this page instantly</p>
+
+    <div class="card">
+      <div class="card-header">
+        <span class="shield-icon">🛡️</span>
+        <span>News Credibility</span>
+      </div>
+      <div class="credibility-score">
+        <div class="score-bar"></div>
+        <span id="score-text">--%</span>
+      </div>
+      <div class="details">
+        <div>Sources verified: <span id="sources">--</span></div>
+        <div>Fact-checked: <span id="fact-checked">--</span></div>
+      </div>
+      <button id="scanBtn" class="scan-btn">Scan This Page</button>
+    </div>
+
+    <div class="footer-note">
+      ✓ Free to use • ✓ No data collection • ✓ Open source
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
