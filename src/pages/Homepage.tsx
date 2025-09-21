@@ -53,7 +53,7 @@ const Homepage = () => {
             whileInView={{ opacity: 1 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            className="-black/40 text-lg font-medium"
+            className="text-muted-foreground text-lg font-medium"
           >
             <a href="https://nexbitx.vercel.app/" className="gradient-text shadow-grey/400">&copy;NexBit</a> 2025 Build
           </motion.p>
