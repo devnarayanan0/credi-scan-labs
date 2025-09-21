@@ -240,7 +240,7 @@ export const LaptopShowcase = () => {
           </div>
         </div>
 
-        {/* Scroll Indicator */}
+        
         
       </div>
 

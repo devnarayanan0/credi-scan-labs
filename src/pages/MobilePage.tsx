@@ -9,32 +9,37 @@ const MobilePage = () => {
   const [url, setUrl] = useState("");
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [results, setResults] = useState<any>(null);
+  const [error, setError] = useState("");
 
   const handleAnalyze = async () => {
     if (!url) return;
     setIsAnalyzing(true);
+    setError("");
     try {
-      // Fetch article content from the user URL
-      const res = await fetch(url);
-      const text = await res.text();
-
-      // Send content to backend for AI analysis
       const aiRes = await fetch('http://localhost:4000/scan', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ content: text, url })
+        body: JSON.stringify({ url })
       });
+      if (!aiRes.ok) {
+        const errData = await aiRes.json().catch(() => ({}));
+        setError(errData.error || "URL does not exist or is not a valid article.");
+        setResults(null);
+        return;
+      }
       const data = await aiRes.json();
-
+      if (!data.credibility || !data.analysis) {
+        setError("URL does not exist or is not a valid article.");
+        setResults(null);
+        return;
+      }
       setResults({
         credibility: data.credibility,
         percentage: data.score,
-        analysis: {
-          site: data.site,
-          date: data.date
-        }
+        analysis: data.analysis || {}
       });
     } catch (error) {
+      setError("URL does not exist or is not a valid article.");
       setResults(null);
     } finally {
       setIsAnalyzing(false);
@@ -166,8 +171,20 @@ const MobilePage = () => {
             </motion.div>
           )}
 
+          {/* Error Message */}
+          {error && !isAnalyzing && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5 }}
+              className="card-glass text-center mb-8 border border-red-500 bg-red-100/30"
+            >
+              <p className="text-red-700 font-semibold">{error}</p>
+            </motion.div>
+          )}
+
           {/* Results */}
-          {results && !isAnalyzing && (
+          {results && !isAnalyzing && !error && (
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
