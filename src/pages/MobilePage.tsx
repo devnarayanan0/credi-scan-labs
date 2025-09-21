@@ -12,22 +12,33 @@ const MobilePage = () => {
 
   const handleAnalyze = async () => {
     if (!url) return;
-    
     setIsAnalyzing(true);
-    
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      // Fetch article content from the user URL
+      const res = await fetch(url);
+      const text = await res.text();
+
+      // Send content to backend for AI analysis
+      const aiRes = await fetch('http://localhost:4000/scan', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content: text, url })
+      });
+      const data = await aiRes.json();
+
       setResults({
-        credibility: Math.random() > 0.3 ? (Math.random() > 0.5 ? "high" : "medium") : "low",
-        percentage: Math.floor(Math.random() * 30) + 70,
+        credibility: data.credibility,
+        percentage: data.score,
         analysis: {
-          sources: Math.floor(Math.random() * 10) + 5,
-          sentiment: Math.random() > 0.5 ? "positive" : "neutral",
-          factChecked: Math.random() > 0.3,
+          site: data.site,
+          date: data.date
         }
       });
+    } catch (error) {
+      setResults(null);
+    } finally {
       setIsAnalyzing(false);
-    }, 3000);
+    }
   };
 
   const getCredibilityData = () => {
@@ -60,20 +71,28 @@ const MobilePage = () => {
     <div className="min-h-screen bg-gradient-hero relative overflow-hidden ">
       <div className="particles" />
       
-      <div className="pt-32 pb-20 px-6">
+      <div className="mt-5 pt-36 pb-20 px-6">
         <div className="max-w-md mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="card-glass mb-8 bg-gradient-primary border-none"
+          >
+            <h1 className="text-5xl md:text-6xl font-bold mb-6 ">
+              Mobile Version...
+            </h1>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto text-white">
+              Paste any news article URL to verify its credibility
+            </p>
+          </motion.div>
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="text-center mb-12"
+            className=" mb-12"
           >
-            <h1 className="text-4xl font-bold mb-4">
-              <span className="gradient-text">Mobile Checker</span>
-            </h1>
-            <p className="text-muted-foreground">
-              Paste any news article URL to verify its credibility
-            </p>
+            
           </motion.div>
 
           {/* Input Card */}
@@ -81,7 +100,7 @@ const MobilePage = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="card-glass mb-8"
+            className="card-glass mb-8 max-w-lg mx-auto"
           >
             <div className="space-y-4">
               <div className="relative">
@@ -214,3 +233,6 @@ const MobilePage = () => {
 };
 
 export default MobilePage;
+
+
+

@@ -1,11 +1,15 @@
 const scanBtn = document.getElementById("scanBtn");
-const resultDiv = document.createElement("div");
-resultDiv.id = "result";
-document.body.appendChild(resultDiv);
+const statusMessage = document.getElementById("status-message");
+const scoreText = document.getElementById("score-text");
+const sources = document.getElementById("sources");
+const factChecked = document.getElementById("fact-checked");
 
 scanBtn.addEventListener("click", async () => {
-  resultDiv.innerText = "Scanning page...";
-
+  statusMessage.innerText = "Scanning page...";
+  scoreText.innerText = "--%";
+  sources.innerText = "--";
+  factChecked.innerText = "--";
+  
   // Get active tab
   let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
 
@@ -19,17 +23,19 @@ scanBtn.addEventListener("click", async () => {
       const pageText = injectionResults[0].result;
 
       try {
-        // Call OpenAI API
+        // Replace "YOUR_API_KEY_HERE" with your actual OpenAI API key
+        const YOUR_API_KEY_HERE = "sk-proj-YOUR_API_KEY_HERE"; 
+        
         const response = await fetch("https://api.openai.com/v1/chat/completions", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": "Bearer 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"
+            "Authorization": `Bearer ${YOUR_API_KEY_HERE}`
           },
           body: JSON.stringify({
             model: "gpt-4o-mini",
             messages: [
-              { role: "system", content: "You are a fact-checking assistant for news articles." },
+              { role: "system", content: "You are a fact-checking assistant for news articles. Provide a concise credibility score from 0-100% and a brief explanation. Format the output as: Score: [percentage]% | Explanation: [brief text]." },
               { role: "user", content: pageText }
             ]
           })
@@ -38,22 +44,36 @@ scanBtn.addEventListener("click", async () => {
         if (!response.ok) {
           const errorText = await response.text();
           console.error('API error:', errorText);
-          resultDiv.innerText = `API error: ${errorText}`;
+          statusMessage.innerText = `API error: ${errorText}`;
           return;
         }
 
         const data = await response.json();
         if (!data.choices || !data.choices[0] || !data.choices[0].message) {
           console.error('Unexpected API response:', data);
-          resultDiv.innerText = 'Unexpected API response.';
+          statusMessage.innerText = 'Unexpected API response.';
           return;
         }
+        
         const answer = data.choices[0].message.content;
-        resultDiv.innerText = answer;
+        
+        // Parse the answer to extract score and explanation
+        const parts = answer.split(' | ');
+        if (parts.length === 2) {
+          const scorePart = parts[0].replace('Score: ', '');
+          const explanationPart = parts[1].replace('Explanation: ', '');
+
+          scoreText.innerText = scorePart;
+          statusMessage.innerText = explanationPart;
+        } else {
+          // Fallback if the format is not as expected
+          scoreText.innerText = '--%';
+          statusMessage.innerText = 'Could not parse API response.';
+        }
 
       } catch (error) {
         console.error(error);
-        resultDiv.innerText = "Error scanning the page.";
+        statusMessage.innerText = "Error scanning the page.";
       }
     }
   );

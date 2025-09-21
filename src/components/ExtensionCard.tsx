@@ -52,10 +52,8 @@ export const ExtensionCard = ({ onInstall }: ExtensionCardProps) => {
         className="card-glass max-w-lg mx-auto p-8 mb-16"
       >
         <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold mb-4">Browser Extension</h2>
-          <p className="text-muted-foreground">
-            Get instant credibility checking while you browse any news website
-          </p>
+          <h2 className="text-3xl font-bold mb-4 text-gradient-text">Extension!</h2>
+          
         </div>
 
         {/* Extension Mockup */}

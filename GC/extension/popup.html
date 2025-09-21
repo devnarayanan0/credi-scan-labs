@@ -2,29 +2,39 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>CrediScan Labs</title>
+  <title>CrediScan</title>
   <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
-  <div class="popup-container">
-    <h2>CrediScan</h2>
-    <p>Check the credibility of this page instantly</p>
-
-    <div class="card">
-      <div class="card-header">
-        <span class="shield-icon">🛡️</span>
-        <span>News Credibility</span>
-      </div>
-      <div class="credibility-score">
-        <div class="score-bar"></div>
-        <span id="score-text">--%</span>
-      </div>
-      <div class="details">
-        <div>Sources verified: <span id="sources">--</span></div>
-        <div>Fact-checked: <span id="fact-checked">--</span></div>
-      </div>
-      <button id="scanBtn" class="scan-btn">Scan This Page</button>
+  <div class="container">
+    <div class="header">
+      <h1 class="logo">CrediScan</h1>
+      <p class="subtitle">Check the credibility of this page</p>
     </div>
+
+    <div class="scan-area">
+      <div class="results-container">
+        <div class="result-box">
+          <div class="score-display">
+            <span id="score-text">--%</span>
+          </div>
+          <div class="score-details">
+            <div class="detail-item">
+              <span class="detail-label">Sources verified:</span>
+              <span id="sources" class="detail-value">--</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Fact-checked:</span>
+              <span id="fact-checked" class="detail-value">--</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="status-message" class="status-message">Ready to scan.</div>
+    </div>
+    
+    <button id="scanBtn" class="scan-btn">Scan This Page</button>
   </div>
 
   <script src="popup.js"></script>
