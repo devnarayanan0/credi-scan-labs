@@ -1,31 +1,11 @@
 import { motion } from "framer-motion";
-import { Search, Shield, Zap, CheckCircle } from "lucide-react";
+import { CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { HeroSection } from "@/components/HeroSection";
-import { FeatureCard } from "@/components/FeatureCard";
+import { PhoneShowcase } from "@/components/PhoneShowcase";
 
 const Homepage = () => {
-  const features = [
-    {
-      icon: Search,
-      title: "Paste Article URL",
-      description: "Simply paste any news article URL from any website or social media platform.",
-      delay: 0.2,
-    },
-    {
-      icon: Shield,
-      title: "AI Analysis",
-      description: "Our advanced AI system analyzes credibility using multiple verification sources.",
-      delay: 0.4,
-    },
-    {
-      icon: Zap,
-      title: "Instant Results",
-      description: "Get credibility scores with detailed explanations in seconds, not minutes.",
-      delay: 0.6,
-    },
-  ];
 
   return (
     <div className="min-h-screen bg-gradient-hero relative overflow-hidden">
@@ -35,37 +15,8 @@ const Homepage = () => {
       {/* Hero Section */}
       <HeroSection />
 
-  {/* How It Works Section */}
-  <section className="pt-0 pb-20 px-6">
-        <div className="max-w-6xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="text-center mb-16"
-          >
-            <h2 className="text-4xl md:text-5xl font-bold mb-6">
-              How It Works
-            </h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Our AI-powered system analyzes news articles in three simple steps
-            </p>
-          </motion.div>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            {features.map((feature, index) => (
-              <FeatureCard
-                key={index}
-                icon={feature.icon}
-                title={feature.title}
-                description={feature.description}
-                delay={feature.delay}
-              />
-            ))}
-          </div>
-        </div>
-      </section>
+      {/* 3D Phone Showcase */}
+      <PhoneShowcase />
 
       {/* CTA Section */}
       <section className="py-20 px-6">

@@ -79,6 +79,10 @@ export default {
         'sweep': 'sweep 2s ease-in-out infinite',
         'typing': 'typing 3.5s steps(40, end), blink 1s infinite',
       },
+      perspective: {
+        '1000': '1000px',
+        '2000': '2000px',
+      },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
