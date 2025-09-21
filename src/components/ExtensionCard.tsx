@@ -4,6 +4,121 @@ import { Chrome, Download, Shield, Star, Globe, FileText, AlertCircle } from "lu
 import { useState } from "react";
 import { getApiBaseUrl, createDemoExtensionZip } from "@/lib/api";
 
+
+
+function analyzeCredibility(url) {
+  const domain = extractDomain(url);
+  if (!domain) return null;
+  
+  const sourceMatch = NEWS_SOURCES_DATA.news_sources.find(src => {
+    return domain === src.domain || domain.includes(src.domain.split('.')[0]);
+  });
+  
+  if (sourceMatch) {
+    let credibilityCategory = sourceMatch.credibility_score >= 85 ? "high" : 
+                             sourceMatch.credibility_score >= 70 ? "medium" : "low";
+    
+    return {
+      credibility: credibilityCategory,
+      score: sourceMatch.credibility_score,
+      analysis: {
+        source_name: sourceMatch.source_name,
+        region: sourceMatch.region,
+        language: sourceMatch.language,
+        type: sourceMatch.type,
+        date_published: new Date().toISOString().split('T')[0],
+        fact_checked: sourceMatch.fact_checked,
+        reason: sourceMatch.reason
+      }
+    };
+  }
+  return null;
+}
+
+function updateCredibilityUI(score, analysis) {
+  const numScore = parseInt(score);
+  if (scoreText) scoreText.textContent = \\\`\\\${numScore}%\\\`;
+  if (scoreProgress) scoreProgress.style.width = \\\`\\\${numScore}%\\\`;
+  
+  if (credibilityCard) {
+    credibilityCard.className = 'credibility-card';
+    if (numScore >= 85) {
+      credibilityCard.classList.add('success');
+      if (statusValue) statusValue.textContent = '✓ Verified';
+    } else if (numScore >= 70) {
+      credibilityCard.classList.add('warning');
+      if (statusValue) statusValue.textContent = '⚠️ Mixed';
+    } else {
+      credibilityCard.classList.add('danger');
+      if (statusValue) statusValue.textContent = '❌ Questionable';
+    }
+  }
+  
+  if (analysis) {
+    if (sourceName) sourceName.textContent = analysis.source_name || 'Unknown';
+    if (region) region.textContent = analysis.region || 'Unknown';
+    if (language) language.textContent = analysis.language || 'Unknown';
+    if (type) type.textContent = analysis.type || 'Unknown';
+    if (dateAnalyzed) dateAnalyzed.textContent = analysis.date_published || 'Unknown';
+    if (factChecked) factChecked.textContent = analysis.fact_checked ? '✓ Yes' : '❌ No';
+    if (statusMessage) statusMessage.textContent = analysis.reason || 'Analysis complete';
+  }
+}
+
+async function handleScanClick() {
+  console.log('Scan button clicked!');
+  
+  if (scanBtn) {
+    scanBtn.disabled = true;
+    scanBtn.innerHTML = '<span class="button-icon">⏳</span><span class="button-text">Scanning...</span>';
+  }
+  if (statusMessage) statusMessage.textContent = 'Analyzing page...';
+  
+  try {
+    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    
+    if (!tab.url || tab.url.startsWith('chrome://')) {
+      if (statusMessage) statusMessage.textContent = 'Cannot scan this type of page';
+      return;
+    }
+
+    const credibilityData = analyzeCredibility(tab.url);
+    
+    setTimeout(() => {
+      if (credibilityData) {
+        updateCredibilityUI(credibilityData.score, credibilityData.analysis);
+      } else {
+        const domain = extractDomain(tab.url);
+        if (statusMessage) statusMessage.textContent = \\\`\\\${domain} not found in trusted sources database\\\`;
+      }
+      
+      if (scanBtn) {
+        scanBtn.disabled = false;
+        scanBtn.innerHTML = '<span class="button-icon">⚡</span><span class="button-text">Scan This Page</span>';
+      }
+    }, 1500);
+
+  } catch (error) {
+    console.error('Extension error:', error);
+    if (statusMessage) statusMessage.textContent = \\\`Error: \\\${error.message}\\\`;
+    if (scanBtn) {
+      scanBtn.disabled = false;
+      scanBtn.innerHTML = '<span class="button-icon">⚡</span><span class="button-text">Scan This Page</span>';
+    }
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  console.log('News Credibility Checker Extension loaded');
+  if (scanBtn) {
+    scanBtn.addEventListener("click", handleScanClick);
+  }
+  if (statusMessage) statusMessage.textContent = 'Ready to scan this page for credibility';
+});\`;
+};
+
+
+
 interface ExtensionCardProps {
   onInstall?: () => void;
 }
@@ -60,6 +175,8 @@ export const ExtensionCard = ({ onInstall }: ExtensionCardProps) => {
       setIsDownloading(false);
     }
   };
+
+
 
   return (
     <>
