@@ -1,0 +1,279 @@
+{
+  "news_sources": [
+    {
+      "source_name": "The New York Times",
+      "region": "US",
+      "language": "English",
+      "type": "Newspaper + Online",
+      "credibility_score": 90,
+      "date_published": "2025-09-21",
+      "fact_checked": true,
+      "reason": "Strong editorial standards and fact-checking",
+      "domain": "nytimes.com"
+    },
+    {
+      "source_name": "BBC News",
+      "region": "UK",
+      "language": "English",
+      "type": "Broadcast + Online",
+      "credibility_score": 88,
+      "date_published": "2025-09-21",
+      "fact_checked": true,
+      "reason": "Globally trusted public broadcaster",
+      "domain": "bbc.co.uk"
+    },
+    {
+      "source_name": "Reuters",
+      "region": "Global",
+      "language": "English",
+      "type": "Wire Service",
+      "credibility_score": 92,
+      "date_published": "2025-09-21",
+      "fact_checked": true,
+      "reason": "Wire service with strict sourcing",
+      "domain": "reuters.com"
+    },
+    {
+      "source_name": "Associated Press (AP)",
+      "region": "US",
+      "language": "English",
+      "type": "Wire Service",
+      "credibility_score": 91,
+      "date_published": "2025-09-21",
+      "fact_checked": true,
+      "reason": "Reliable news agency cited worldwide",
+      "domain": "apnews.com"
+    },
+    {
+      "source_name": "The Wall Street Journal",
+      "region": "US",
+      "language": "English",
+      "type": "Newspaper + Online",
+      "credibility_score": 87,
+      "date_published": "2025-09-21",
+      "fact_checked": true,
+      "reason": "Strong business reporting and standards",
+      "domain": "wsj.com"
+    },
+    {
+      "source_name": "The Washington Post",
+      "region": "US",
+      "language": "English",
+      "type": "Newspaper + Online",
+      "credibility_score": 86,
+      "date_published": "2025-09-21",
+      "fact_checked": true,
+      "reason": "Investigative reporting and editorial oversight",
+      "domain": "washingtonpost.com"
+    },
+    {
+      "source_name": "The Guardian",
+      "region": "UK",
+      "language": "English",
+      "type": "Newspaper + Online",
+      "credibility_score": 85,
+      "date_published": "2025-09-21",
+      "fact_checked": true,
+      "reason": "Investigative journalism, established outlet",
+      "domain": "theguardian.com"
+    },
+    {
+      "source_name": "Bloomberg",
+      "region": "Global",
+      "language": "English",
+      "type": "News Agency / Financial",
+      "credibility_score": 88,
+      "date_published": "2025-09-21",
+      "fact_checked": true,
+      "reason": "Respected financial news organization",
+      "domain": "bloomberg.com"
+    },
+    {
+      "source_name": "Financial Times",
+      "region": "UK",
+      "language": "English",
+      "type": "Newspaper + Online",
+      "credibility_score": 87,
+      "date_published": "2025-09-21",
+      "fact_checked": true,
+      "reason": "Reputable business journalism",
+      "domain": "ft.com"
+    },
+    {
+      "source_name": "The Economist",
+      "region": "UK",
+      "language": "English",
+      "type": "Magazine",
+      "credibility_score": 89,
+      "date_published": "2025-09-21",
+      "fact_checked": true,
+      "reason": "In-depth analysis and editorial standards",
+      "domain": "economist.com"
+    },
+    {
+      "source_name": "New York Post",
+      "region": "US",
+      "language": "English",
+      "type": "Newspaper + Online",
+      "credibility_score": 60,
+      "date_published": "2025-09-21",
+      "fact_checked": false,
+      "reason": "Tabloid style, sensational headlines",
+      "domain": "nypost.com"
+    },
+    {
+      "source_name": "Daily Mail (MailOnline)",
+      "region": "UK",
+      "language": "English",
+      "type": "Online Tabloid",
+      "credibility_score": 55,
+      "date_published": "2025-09-21",
+      "fact_checked": false,
+      "reason": "High reach but frequent sensationalism",
+      "domain": "dailymail.co.uk"
+    },
+    {
+      "source_name": "The Times (UK)",
+      "region": "UK",
+      "language": "English",
+      "type": "Newspaper + Online",
+      "credibility_score": 80,
+      "date_published": "2025-09-21",
+      "fact_checked": true,
+      "reason": "Established national newspaper",
+      "domain": "thetimes.co.uk"
+    },
+    {
+      "source_name": "The Independent",
+      "region": "UK",
+      "language": "English",
+      "type": "Online Newspaper",
+      "credibility_score": 77,
+      "date_published": "2025-09-21",
+      "fact_checked": true,
+      "reason": "Independent reporting, online-focused",
+      "domain": "independent.co.uk"
+    },
+    {
+      "source_name": "Al Jazeera",
+      "region": "Qatar/Global",
+      "language": "English/Arabic",
+      "type": "Broadcast + Online",
+      "credibility_score": 82,
+      "date_published": "2025-09-21",
+      "fact_checked": true,
+      "reason": "Extensive international coverage, regional perspective",
+      "domain": "aljazeera.com"
+    },
+    {
+      "source_name": "CNN",
+      "region": "US",
+      "language": "English",
+      "type": "Broadcast + Online",
+      "credibility_score": 78,
+      "date_published": "2025-09-21",
+      "fact_checked": false,
+      "reason": "Large reach, mixed editorial quality at times",
+      "domain": "cnn.com"
+    },
+    {
+      "source_name": "NBC News",
+      "region": "US",
+      "language": "English",
+      "type": "Broadcast + Online",
+      "credibility_score": 79,
+      "date_published": "2025-09-21",
+      "fact_checked": true,
+      "reason": "Major US broadcaster with standards",
+      "domain": "nbcnews.com"
+    },
+    {
+      "source_name": "CBS News",
+      "region": "US",
+      "language": "English",
+      "type": "Broadcast + Online",
+      "credibility_score": 78,
+      "date_published": "2025-09-21",
+      "fact_checked": true,
+      "reason": "Longstanding broadcast news outlet",
+      "domain": "cbsnews.com"
+    },
+    {
+      "source_name": "ABC News (Australia)",
+      "region": "Australia",
+      "language": "English",
+      "type": "Broadcast + Online",
+      "credibility_score": 86,
+      "date_published": "2025-09-21",
+      "fact_checked": true,
+      "reason": "Public broadcaster with editorial oversight",
+      "domain": "abc.net.au"
+    },
+    {
+      "source_name": "The Hindu",
+      "region": "India",
+      "language": "English",
+      "type": "Newspaper + Online",
+      "credibility_score": 81,
+      "date_published": "2025-09-21",
+      "fact_checked": true,
+      "reason": "Respected Indian national newspaper",
+      "domain": "thehindu.com"
+    },
+    {
+      "source_name": "Times of India",
+      "region": "India",
+      "language": "English",
+      "type": "Newspaper + Online",
+      "credibility_score": 76,
+      "date_published": "2025-09-21",
+      "fact_checked": false,
+      "reason": "Very high reach but sometimes sensational headlines",
+      "domain": "timesofindia.indiatimes.com"
+    },
+    {
+      "source_name": "Indian Express",
+      "region": "India",
+      "language": "English",
+      "type": "Newspaper + Online",
+      "credibility_score": 79,
+      "date_published": "2025-09-21",
+      "fact_checked": true,
+      "reason": "Investigative reporting and editorials",
+      "domain": "indianexpress.com"
+    },
+    {
+      "source_name": "Hindustan Times",
+      "region": "India",
+      "language": "English",
+      "type": "Newspaper + Online",
+      "credibility_score": 75,
+      "date_published": "2025-09-21",
+      "fact_checked": false,
+      "reason": "Popular national outlet, mixed depth",
+      "domain": "hindustantimes.com"
+    },
+    {
+      "source_name": "NDTV",
+      "region": "India",
+      "language": "English/Hindi",
+      "type": "Broadcast + Online",
+      "credibility_score": 74,
+      "date_published": "2025-09-21",
+      "fact_checked": false,
+      "reason": "Large broadcaster, variable editorial quality",
+      "domain": "ndtv.com"
+    },
+    {
+      "source_name": "India Today",
+      "region": "India",
+      "language": "English/Hindi",
+      "type": "Magazine + Online",
+      "credibility_score": 72,
+      "date_published": "2025-09-21",
+      "fact_checked": false,
+      "reason": "Popular news magazine, mixed rigor",
+      "domain": "indiatoday.in"
+    }
+  ]
+}

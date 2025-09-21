@@ -1,42 +1,96 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
-  <title>CrediScan</title>
+  <title>News Credibility Checker</title>
   <link rel="stylesheet" href="styles.css">
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
+
 <body>
   <div class="container">
+    <!-- Header -->
     <div class="header">
-      <h1 class="logo">CrediScan</h1>
-      <p class="subtitle">Check the credibility of this page</p>
+      <div class="header-content">
+        <div class="logo-section">
+          <div class="shield-icon">🛡️</div>
+          <span class="logo-text">Credibility Score</span>
+        </div>
+        <div class="status-indicator"></div>
+      </div>
     </div>
 
-    <div class="scan-area">
-      <div class="results-container">
-        <div class="result-box">
-          <div class="score-display">
-            <span id="score-text">--%</span>
-          </div>
-          <div class="score-details">
-            <div class="detail-item">
-              <span class="detail-label">Sources verified:</span>
-              <span id="sources" class="detail-value">--</span>
-            </div>
-            <div class="detail-item">
-              <span class="detail-label">Fact-checked:</span>
-              <span id="fact-checked" class="detail-value">--</span>
-            </div>
-          </div>
+    <!-- Main Content -->
+    <div class="main-content">
+      <!-- Credibility Score Card -->
+      <div class="credibility-card" id="credibility-card">
+        <div class="score-header">
+          <span class="score-label">Credibility Score</span>
+          <span class="score-value" id="score-text">--%</span>
+        </div>
+        <div class="score-bar">
+          <div class="score-progress" id="score-progress"></div>
         </div>
       </div>
-      <div id="status-message" class="status-message">Ready to scan.</div>
+
+      <!-- Source Information Section -->
+      <div class="details-section">
+        <h4 class="section-title">Source Information</h4>
+        <div class="detail-row">
+          <span class="detail-label">Source Name:</span>
+          <span class="detail-value" id="source-name">--</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Region:</span>
+          <span class="detail-value" id="region">--</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Language:</span>
+          <span class="detail-value" id="language">--</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Type:</span>
+          <span class="detail-value" id="type">--</span>
+        </div>
+      </div>
+
+      <!-- Analysis Details Section -->
+      <div class="details-section">
+        <h4 class="section-title">Analysis Details</h4>
+        <div class="detail-row">
+          <span class="detail-label">Date Analyzed:</span>
+          <span class="detail-value" id="date-analyzed">--</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Fact-checked:</span>
+          <span class="detail-value" id="fact-checked">--</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Status:</span>
+          <span class="detail-value" id="status-value">Ready</span>
+        </div>
+      </div>
+
+      <!-- Status Message -->
+      <div class="status-message" id="status-message">
+        Ready to scan this page for credibility
+      </div>
+
+      <!-- Action Button -->
+      <button class="scan-button" id="scanBtn">
+        <span class="button-icon">⚡</span>
+        <span class="button-text">Scan This Page</span>
+      </button>
     </div>
-    
-    <button id="scanBtn" class="scan-btn">Scan This Page</button>
+
+    <!-- Footer -->
+    <div class="footer">
+      <p>&copy;NexBit </p>
+    </div>
   </div>
 
   <script src="popup.js"></script>
 </body>
+
 </html>

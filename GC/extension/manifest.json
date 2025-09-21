@@ -1,16 +1,27 @@
 {
   "manifest_version": 3,
-  "name": "CrediScan Labs",
-  "description": "Scans news articles and checks for misinformation.",
+  "name": "News Credibility Checker",
+  "description": "AI-powered news credibility verification. Get instant credibility scores for any news article.",
   "version": "1.0",
 
   "action": {
-    "default_popup": "popup.html"
+    "default_popup": "popup.html",
+    "default_title": "Check News Credibility",
+    "default_icon": {
+      "16": "logo.png",
+      "32": "logo.png",
+      "48": "logo.png",
+      "128": "logo.png"
+    }
   },
 
   "permissions": [
     "activeTab",
     "scripting"
+  ],
+
+  "host_permissions": [
+    "http://localhost:4000/*"
   ],
 
   "background": {
@@ -22,5 +33,12 @@
       "matches": ["<all_urls>"],
       "js": ["content.js"]
     }
-  ]
+  ],
+
+  "icons": {
+    "16": "logo.png",
+    "32": "logo.png",
+    "48": "logo.png",
+    "128": "logo.png"
+  }
 }

@@ -198,30 +198,55 @@ const MobilePage = () => {
                 description={getCredibilityData()?.description || ""}
               />
 
-              {/* Additional Analysis */}
+              {/* Analysis Details */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.3 }}
                 className="card-glass"
               >
-                <h3 className="text-lg font-semibold mb-4">Analysis Details</h3>
+                <h3 className="text-lg font-semibold mb-4">Source Information</h3>
                 <div className="space-y-3 text-sm">
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Sources Checked:</span>
-                    <span className="font-medium">{results.analysis.sources}</span>
+                    <span className="text-muted-foreground">Source Name:</span>
+                    <span className="font-medium">{results.analysis.source_name || "Unknown"}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Sentiment:</span>
-                    <span className="font-medium capitalize">{results.analysis.sentiment}</span>
+                    <span className="text-muted-foreground">Region:</span>
+                    <span className="font-medium">{results.analysis.region || "Unknown"}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Language:</span>
+                    <span className="font-medium">{results.analysis.language || "Unknown"}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Type:</span>
+                    <span className="font-medium">{results.analysis.type || "Unknown"}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Date Analyzed:</span>
+                    <span className="font-medium">{results.analysis.date_published || "Unknown"}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Fact-Checked:</span>
                     <span className="font-medium">
-                      {results.analysis.factChecked ? "✅ Yes" : "❌ No"}
+                      {results.analysis.fact_checked ? "✅ Yes" : "❌ No"}
                     </span>
                   </div>
                 </div>
+              </motion.div>
+
+              {/* Credibility Reason */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.4 }}
+                className="card-glass"
+              >
+                <h3 className="text-lg font-semibold mb-3">Credibility Assessment</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  {results.analysis.reason || "No detailed assessment available."}
+                </p>
               </motion.div>
 
               {/* Try Another */}
