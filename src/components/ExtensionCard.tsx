@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Chrome, Download, Shield, Star, Globe, FileText, AlertCircle } from "lucide-react";
 import { useState } from "react";
+import { getApiBaseUrl, createDemoExtensionZip } from "@/lib/api";
 
 interface ExtensionCardProps {
   onInstall?: () => void;
@@ -14,49 +15,84 @@ export const ExtensionCard = ({ onInstall }: ExtensionCardProps) => {
 
   const handleDownload = async () => {
     setIsDownloading(true);
+    
+    // Always try demo mode first to ensure it works
+    console.log('Starting download process...');
+    
     try {
-      // First test if server is accessible
-      console.log('Testing server connection...');
-      const testResponse = await fetch('http://localhost:4000/test');
-      if (!testResponse.ok) {
-        throw new Error('Server not accessible. Please start the backend server.');
+      const apiBaseUrl = getApiBaseUrl();
+      
+      if (apiBaseUrl) {
+        // Try to use the real API (local development)
+        console.log('Attempting to connect to local server...');
+        
+        try {
+          const testResponse = await fetch(`${apiBaseUrl}/test`, { 
+            method: 'GET',
+            signal: AbortSignal.timeout(5000) // 5 second timeout
+          });
+          
+          if (testResponse.ok) {
+            console.log('Server accessible, downloading extension...');
+            const response = await fetch(`${apiBaseUrl}/download-extension`, {
+              signal: AbortSignal.timeout(10000) // 10 second timeout
+            });
+            
+            if (response.ok) {
+              const blob = await response.blob();
+              if (blob.size > 0) {
+                console.log('Real download successful, file size:', blob.size, 'bytes');
+                
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'NEXBITCred.zip';
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+                
+                // Show success effects
+                setShowConfetti(true);
+                setShowInstructions(true);
+                setTimeout(() => setShowConfetti(false), 3000);
+                onInstall?.();
+                return; // Success, exit early
+              }
+            }
+          }
+        } catch (apiError) {
+          console.log('API request failed:', apiError.message);
+        }
       }
-
-      console.log('Server is accessible, downloading extension...');
-
-      // Download the extension zip
-      const response = await fetch('http://localhost:4000/download-extension');
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`Download failed: ${response.status} - ${errorText}`);
-      }
-
-      const blob = await response.blob();
-
-      // Check if we actually got a zip file
-      if (blob.size === 0) {
-        throw new Error('Downloaded file is empty');
-      }
-
-      console.log('Download successful, file size:', blob.size, 'bytes');
-
+      
+      // If we reach here, either no API or API failed - use demo mode
+      console.log('Using demo mode for extension download');
+      const blob = await createDemoExtensionZip();
+      
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'NEXBITCred.zip';
+      a.download = 'NEXBITCred-Demo.txt';
       document.body.appendChild(a);
       a.click();
       window.URL.revokeObjectURL(url);
       document.body.removeChild(a);
-
+      
       // Show success effects
       setShowConfetti(true);
       setShowInstructions(true);
       setTimeout(() => setShowConfetti(false), 3000);
       onInstall?.();
+      
+      // Inform user about demo mode
+      setTimeout(() => {
+        alert('Demo Mode: Downloaded demo file with installation instructions.\n\nThis demonstrates the download functionality. In a production environment with a backend server, you would receive the actual extension files.');
+      }, 500);
+      
     } catch (error) {
-      console.error('Download error:', error);
-      alert(`Download failed: ${error.message}\n\nPlease make sure:\n1. The backend server is running (npm run dev or node server.js)\n2. The server is accessible at http://localhost:4000`);
+      console.error('Download process failed:', error);
+      alert('Download failed. Please try again later.');
     } finally {
       setIsDownloading(false);
     }
