@@ -1,11 +1,29 @@
 import { motion } from "framer-motion";
-import { CheckCircle } from "lucide-react";
+import { CheckCircle, Zap, Shield, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { HeroSection } from "@/components/HeroSection";
 import { LaptopShowcase } from "@/components/LaptopShowcase";
+import { FeatureCard } from "@/components/FeatureCard";
 
 const Homepage = () => {
+  const features = [
+    {
+      icon: Zap,
+      title: "Instant Analysis",
+      description: "Get credibility scores without leaving the page",
+    },
+    {
+      icon: Shield,
+      title: "Real-time Protection",
+      description: "Automatic warnings for suspicious content",
+    },
+    {
+      icon: Globe,
+      title: "Works Everywhere",
+      description: "Compatible with all major news websites",
+    },
+  ];
 
   return (
     <div className="min-h-screen bg-gradient-hero relative overflow-hidden">
@@ -36,6 +54,44 @@ const Homepage = () => {
 
       {/* 3D Laptop Showcase */}
       <LaptopShowcase />
+
+      {/* Features Section */}
+      <section className="py-20 px-6">
+        <div className="max-w-6xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-4xl md:text-5xl font-bold mb-6">
+              <span className="gradient-text">Powerful Features</span>
+            </h2>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              Experience the future of news verification with our advanced AI-powered platform
+            </p>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+            viewport={{ once: true }}
+            className="grid md:grid-cols-3 gap-6"
+          >
+            {features.map((feature, index) => (
+              <FeatureCard
+                key={index}
+                icon={feature.icon}
+                title={feature.title}
+                description={feature.description}
+                delay={0.2 * index}
+              />
+            ))}
+          </motion.div>
+        </div>
+      </section>
 
       {/* CTA Section */}
       <section className="py-20 px-6">

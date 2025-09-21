@@ -1,27 +1,7 @@
 import { motion } from "framer-motion";
-import { Zap, Shield, Globe } from "lucide-react";
 import { ExtensionCard } from "@/components/ExtensionCard";
-import { FeatureCard } from "@/components/FeatureCard";
 
 const ExtensionPage = () => {
-
-  const features = [
-    {
-      icon: Zap,
-      title: "Instant Analysis",
-      description: "Get credibility scores without leaving the page",
-    },
-    {
-      icon: Shield,
-      title: "Real-time Protection",
-      description: "Automatic warnings for suspicious content",
-    },
-    {
-      icon: Globe,
-      title: "Works Everywhere",
-      description: "Compatible with all major news websites",
-    },
-  ];
 
   return (
     <div className="min-h-screen bg-gradient-hero relative overflow-hidden">
@@ -48,29 +28,11 @@ const ExtensionPage = () => {
             transition={{ duration: 0.8 }}
             className="text-center mb-16"
           >
-            
+
           </motion.div>
 
-          {/* Extension Card - Moved to Top */}
+          {/* Extension Card */}
           <ExtensionCard />
-
-          {/* Features */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-            className="grid md:grid-cols-3 gap-6"
-          >
-            {features.map((feature, index) => (
-              <FeatureCard
-                key={index}
-                icon={feature.icon}
-                title={feature.title}
-                description={feature.description}
-                delay={0.2 * index}
-              />
-            ))}
-          </motion.div>
         </div>
       </div>
     </div>
