@@ -2,72 +2,78 @@
 
 ## Project info
 
-**URL**: https://lovable.dev/projects/c44f2edc-89a8-4cd6-afae-675d8bb8ab14
+A lightweight and secure credential verification tool designed to help developers and organizations validate, manage, and protect sensitive information such as API keys, tokens, and passwords.
 
-## How can I edit this code?
+🚀 Features
 
-There are several ways of editing your application.
+🔑 Detect exposed API keys and secrets in codebases
 
-**Use Lovable**
+🛡️ Validate credentials against supported services
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/c44f2edc-89a8-4cd6-afae-675d8bb8ab14) and start prompting.
+📊 Generate security reports for audits
 
-Changes made via Lovable will be committed automatically to this repo.
+⚡ Lightweight, fast, and developer-friendly
 
-**Use your preferred IDE**
+🔒 Focused on privacy – no sensitive data leaves your system
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+📦 Installation
 
-Follow these steps:
+# Clone the repository
+git clone https://github.com/your-username/credcheck.git
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+# Navigate into the project directory
+cd credcheck
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+# Install dependencies
+npm install   # if Node.js
+# or
+pip install -r requirements.txt   # if Python
 
-# Step 3: Install the necessary dependencies.
-npm i
+🛠️ Usage
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
+# Basic usage
+credcheck scan ./my-project
 
-**Edit a file directly in GitHub**
+# Scan with detailed report
+credcheck scan ./my-project --report out.json
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+Example Output
 
-**Use GitHub Codespaces**
+✔ Scanning started...
+⚠️  Found exposed AWS_ACCESS_KEY in config.js
+⚠️  Found suspicious token in .env
+✔ Scan completed. 2 issues found.
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+📚 Configuration
 
-## What technologies are used for this project?
+Create a .credcheckrc file in your project root:
 
-This project is built with:
+{
+  "ignore": ["node_modules", "tests"],
+  "reportFormat": "json",
+  "sensitivePatterns": ["AWS_ACCESS_KEY", "GOOGLE_API_KEY"]
+}
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+🤝 Contributing
 
-## How can I deploy this project?
+Contributions are always welcome!
 
-Simply open [Lovable](https://lovable.dev/projects/c44f2edc-89a8-4cd6-afae-675d8bb8ab14) and click on Share -> Publish.
+1. Fork the project
 
-## Can I connect a custom domain to my Lovable project?
 
-Yes, you can!
+2. Create your feature branch (git checkout -b feature/my-feature)
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+3. Commit your changes (git commit -m 'Add my feature')
+
+
+4. Push to the branch (git push origin feature/my-feature)
+
+
+5. Open a Pull Request
+
+
+
+
+
