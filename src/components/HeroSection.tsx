@@ -21,6 +21,9 @@ export const HeroSection = () => {
               text="Checker" 
               className="text-6xl md:text-7xl font-bold text-foreground"
             />
+            <p className="mt-6 text-xl text-muted-foreground font-medium max-w-2xl mx-auto pt-8 text-black">
+              Instantly check the credibility of any news article using AI-powered analysis. Paste a link and get a trust score, source verification, much fast and easy !
+            </p>
           </h1>
         </motion.div>
 
@@ -37,16 +40,16 @@ export const HeroSection = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 1 }}
-          className="flex flex-col sm:flex-row gap-4 justify-center items-center "
+          className="flex flex-col sm:flex-row gap-6 justify-center items-center "
         >
                 <Link to="/mobile">
-                  <Button className="btn-hero group shadow-lg text-lg px-8 py-5 rounded-xl">
+                  <Button className="btn-hero group shadow-2xl text-xl px-12 py-7 rounded-2xl">
               Mobile Version
               <ArrowRight className="w-5 h-5 ml-2 transition-transform group-hover:translate-x-1" />
             </Button>
           </Link>
                 <Link to="/extension">
-                  <Button variant="outline" className="glass hover:bg-primary/10 text-foreground px-8 py-5 shadow-lg rounded-xl text-lg">
+                  <Button variant="outline" className="glass hover:bg-primary/10 text-foreground px-12 py-7 shadow-2xl rounded-2xl text-xl">
               Get Extension
             </Button>
           </Link>

@@ -11,9 +11,28 @@ const Homepage = () => {
     <div className="min-h-screen bg-gradient-hero relative overflow-hidden">
       {/* Particle Background */}
       <div className="particles" />
-      
+
       {/* Hero Section */}
       <HeroSection />
+      <motion.div
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        transition={{ delay: 1 }}
+        className="text-center mt-16"
+      >
+        <p className="text-muted-foreground mb-4">Scroll Down</p>
+        <motion.div
+          animate={{ y: [0, 10, 0] }}
+          transition={{ duration: 2, repeat: Infinity }}
+          className="w-6 h-10 border-2 border-muted-foreground/30 rounded-full mx-auto relative"
+        >
+          <motion.div
+            animate={{ y: [0, 16, 0] }}
+            transition={{ duration: 2, repeat: Infinity }}
+            className="w-1 h-3 bg-primary rounded-full mx-auto mt-2"
+          ></motion.div>
+        </motion.div>
+      </motion.div>
 
       {/* 3D Laptop Showcase */}
       <LaptopShowcase />
@@ -33,7 +52,7 @@ const Homepage = () => {
           <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
             Join thousands of users who trust our AI-powered fact-checking system
           </p>
-          
+
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Link to="/mobile">
               <Button className="btn-hero group">

@@ -62,6 +62,7 @@ export const LaptopShowcase = () => {
   return (
     <div ref={containerRef} className="relative min-h-screen py-20">
       <div className="max-w-6xl mx-auto px-6">
+        
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -69,9 +70,8 @@ export const LaptopShowcase = () => {
           className="text-center mb-16"
         >
           <h2 className="text-5xl md:text-6xl font-bold mb-6">
-            <span className="gradient-text">Browser</span>
-            <br />
-            Extension
+            
+             Browser Extension
           </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             Experience real-time credibility checking directly in your browser
@@ -241,25 +241,7 @@ export const LaptopShowcase = () => {
         </div>
 
         {/* Scroll Indicator */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ delay: 1 }}
-          className="text-center mt-16"
-        >
-          <p className="text-muted-foreground mb-4">Scroll to see extension in action</p>
-          <motion.div
-            animate={{ y: [0, 10, 0] }}
-            transition={{ duration: 2, repeat: Infinity }}
-            className="w-6 h-10 border-2 border-muted-foreground/30 rounded-full mx-auto relative"
-          >
-            <motion.div
-              animate={{ y: [0, 16, 0] }}
-              transition={{ duration: 2, repeat: Infinity }}
-              className="w-1 h-3 bg-primary rounded-full mx-auto mt-2"
-            ></motion.div>
-          </motion.div>
-        </motion.div>
+        
       </div>
 
       {/* Background Elements */}
