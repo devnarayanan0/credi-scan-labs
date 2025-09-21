@@ -3,84 +3,90 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { CredibilityCard } from "@/components/CredibilityCard";
-import { Search, Sparkles, Loader2, Shield, Star, AlertTriangle, CheckCircle, XCircle, Info } from "lucide-react";
+import { Search, Sparkles, Loader2, Shield, Star, Link2, TrendingUp } from "lucide-react";
 import { getApiBaseUrl, getDemoCredibilityData } from "@/lib/api";
-import { analyzeUrlWithVirusTotal, getCredibilityLevel, CredibilityAnalysis } from "@/lib/virustotal";
+
+interface AnalysisResults {
+  credibility: "high" | "medium" | "low";
+  percentage: number;
+  analysis: {
+    source_name: string;
+    region: string;
+    language: string;
+    type: string;
+    date_published: string;
+    fact_checked: boolean;
+    reason: string;
+  };
+}
 
 const MobilePage = () => {
   const [url, setUrl] = useState("");
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [results, setResults] = useState<CredibilityAnalysis | null>(null);
+  const [results, setResults] = useState<AnalysisResults | null>(null);
   const [error, setError] = useState("");
-  const [showVirusTotalResults, setShowVirusTotalResults] = useState(false);
 
   const handleAnalyze = async () => {
     if (!url) return;
     setIsAnalyzing(true);
     setError("");
-    setResults(null);
-    setShowVirusTotalResults(false);
     
     console.log('Starting credibility analysis for:', url);
     
     try {
-      // Use VirusTotal API for real credibility analysis
-      console.log('Using VirusTotal API for URL analysis...');
+      const apiBaseUrl = getApiBaseUrl();
       
-      const vtAnalysis = await analyzeUrlWithVirusTotal(url);
-      console.log('VirusTotal analysis complete:', vtAnalysis);
-      
-      setResults(vtAnalysis);
-      setShowVirusTotalResults(true);
-      
-    } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-      console.error('VirusTotal analysis failed:', error);
-      
-      // Fallback to demo data if VirusTotal fails
-      console.log('Falling back to demo analysis...');
-      
-      try {
-        // Simulate realistic API delay
-        await new Promise(resolve => setTimeout(resolve, 1500));
+      if (apiBaseUrl) {
+        // Try to use real API first
+        console.log('Using real API for analysis...');
         
-        const demoData = getDemoCredibilityData(url);
-        console.log('Demo analysis complete:', demoData);
+        const response = await fetch(`${apiBaseUrl}/scan`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ url })
+        });
         
-        // Convert demo data to CredibilityAnalysis format
-        const fallbackResults: CredibilityAnalysis = {
-          url: url,
-          credibilityScore: demoData.score,
-          riskLevel: demoData.credibility === 'high' ? 'low' : 
-                    demoData.credibility === 'medium' ? 'medium' : 'high',
-          maliciousCount: 0,
-          suspiciousCount: demoData.credibility === 'low' ? 3 : 0,
-          harmlessCount: demoData.credibility === 'high' ? 10 : 5,
-          undetectedCount: 2,
-          reputation: demoData.credibility === 'high' ? 15 : 
-                     demoData.credibility === 'medium' ? 0 : -10,
-          categories: ['news', 'media'],
-          title: `Demo Analysis - ${demoData.analysis.source_name}`,
-          recommendations: [
-            "⚠️ This is demo data - VirusTotal API unavailable",
-            "📰 Always verify news from multiple trusted sources",
-            "🔍 Check author credentials and publication standards"
-          ],
-          trustedAlternatives: [
-            "📰 BBC News: https://www.bbc.com/news",
-            "📰 Reuters: https://www.reuters.com",
-            "✓ Snopes: https://www.snopes.com"
-          ]
-        };
-        
-        setResults(fallbackResults);
-        setShowVirusTotalResults(false);
-        setError("VirusTotal unavailable - showing demo analysis. " + errorMessage);
-        
-      } catch (demoError) {
-        console.error('Demo analysis also failed:', demoError);
-        setError("Analysis failed. Please check the URL format and try again.");
+        if (response.ok) {
+          const apiData = await response.json();
+          console.log('Real API analysis complete:', apiData);
+          
+          setResults({
+            credibility: apiData.credibility as "high" | "medium" | "low",
+            percentage: apiData.score,
+            analysis: apiData.analysis
+          });
+          
+          return; // Success, exit early
+        } else {
+          console.log('API request failed, falling back to demo mode');
+        }
       }
+      
+      // Fallback to demo mode
+      console.log('Using demo credibility analysis...');
+      
+      // Simulate realistic API delay
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      const demoData = getDemoCredibilityData(url);
+      console.log('Demo analysis complete:', demoData);
+      
+      setResults({
+        credibility: demoData.credibility as "high" | "medium" | "low",
+        percentage: demoData.score,
+        analysis: demoData.analysis
+      });
+      
+      // Show demo mode message
+      setError("Demo Mode: Sample data shown (server not available or source not in database)");
+      setTimeout(() => setError(""), 4000);
+      
+    } catch (error) {
+      console.error('Analysis failed:', error);
+      setError("Analysis failed. Please check the URL format and try again.");
+      setResults(null);
     } finally {
       setIsAnalyzing(false);
     }
@@ -89,34 +95,26 @@ const MobilePage = () => {
   const getCredibilityData = () => {
     if (!results) return null;
     
-    const { credibilityScore, riskLevel } = results;
+    const { credibility, percentage } = results;
     
-    switch (riskLevel) {
-      case "low":
+    switch (credibility) {
+      case "high":
         return {
           title: "Highly Credible",
-          description: "This URL passed security checks and appears to be from a trusted source.",
+          description: "This article comes from verified sources with strong factual backing.",
         };
       case "medium":
         return {
-          title: "Moderately Credible", 
-          description: "Some security flags detected. Proceed with caution and verify information.",
+          title: "Moderately Credible",
+          description: "Article shows mixed signals. Some claims may need additional verification.",
         };
-      case "high":
+      case "low":
         return {
-          title: "High Risk",
-          description: "Multiple security warnings detected. This URL may be dangerous or contain misinformation.",
+          title: "Low Credibility",
+          description: "Multiple red flags detected. This article may contain misinformation.",
         };
       default:
         return null;
-    }
-  };
-
-  const getCredibilityLevel = (riskLevel: 'low' | 'medium' | 'high'): 'high' | 'medium' | 'low' => {
-    switch (riskLevel) {
-      case 'low': return 'high';
-      case 'medium': return 'medium';
-      case 'high': return 'low';
     }
   };
 
@@ -345,17 +343,14 @@ const MobilePage = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.5 }}
-              className="card-glass text-center mb-8 border border-orange-500 bg-orange-100/30"
+              className="card-glass text-center mb-8 border border-red-500 bg-red-100/30"
             >
-              <div className="flex items-center justify-center space-x-2">
-                <AlertTriangle className="w-5 h-5 text-orange-700" />
-                <p className="text-orange-700 font-semibold">{error}</p>
-              </div>
+              <p className="text-red-700 font-semibold">{error}</p>
             </motion.div>
           )}
 
           {/* Results */}
-          {results && !isAnalyzing && (
+          {results && !isAnalyzing && !error && (
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -363,181 +358,78 @@ const MobilePage = () => {
               className="space-y-6"
             >
               <CredibilityCard
-                credibility={getCredibilityLevel(results.riskLevel)}
-                percentage={results.credibilityScore}
+                credibility={results.credibility}
+                percentage={results.percentage}
                 title={getCredibilityData()?.title || ""}
                 description={getCredibilityData()?.description || ""}
               />
 
-              {/* Security Analysis Summary */}
-              {showVirusTotalResults && (
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.2 }}
-                  className="card-glass"
-                >
-                  <div className="flex items-center space-x-2 mb-4">
-                    <Shield className="w-5 h-5 text-primary" />
-                    <h3 className="text-lg font-semibold">Security Analysis</h3>
-                  </div>
-                  
-                  <div className="grid grid-cols-2 gap-4 mb-4">
-                    <div className="bg-success/20 rounded-lg p-3 border border-success/30">
-                      <div className="flex items-center space-x-2">
-                        <CheckCircle className="w-4 h-4 text-success" />
-                        <span className="text-sm font-medium">Safe</span>
-                      </div>
-                      <div className="text-2xl font-bold text-success">{results.harmlessCount}</div>
-                    </div>
-                    
-                    <div className="bg-warning/20 rounded-lg p-3 border border-warning/30">
-                      <div className="flex items-center space-x-2">
-                        <AlertTriangle className="w-4 h-4 text-warning" />
-                        <span className="text-sm font-medium">Suspicious</span>
-                      </div>
-                      <div className="text-2xl font-bold text-warning">{results.suspiciousCount}</div>
-                    </div>
-                    
-                    <div className="bg-destructive/20 rounded-lg p-3 border border-destructive/30">
-                      <div className="flex items-center space-x-2">
-                        <XCircle className="w-4 h-4 text-destructive" />
-                        <span className="text-sm font-medium">Malicious</span>
-                      </div>
-                      <div className="text-2xl font-bold text-destructive">{results.maliciousCount}</div>
-                    </div>
-                    
-                    <div className="bg-muted/20 rounded-lg p-3 border border-muted/30">
-                      <div className="flex items-center space-x-2">
-                        <Info className="w-4 h-4 text-muted-foreground" />
-                        <span className="text-sm font-medium">Undetected</span>
-                      </div>
-                      <div className="text-2xl font-bold text-muted-foreground">{results.undetectedCount}</div>
-                    </div>
-                  </div>
-
-                  <div className="text-sm text-muted-foreground">
-                    <div className="flex justify-between items-center">
-                      <span>Domain Reputation:</span>
-                      <span className={`font-medium ${
-                        results.reputation > 0 ? 'text-success' : 
-                        results.reputation < 0 ? 'text-destructive' : 'text-warning'
-                      }`}>
-                        {results.reputation > 0 ? '+' : ''}{results.reputation}
-                      </span>
-                    </div>
-                  </div>
-                </motion.div>
-              )}
-
-              {/* AI Recommendations */}
+              {/* Analysis Details */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.3 }}
                 className="card-glass"
               >
-                <div className="flex items-center space-x-2 mb-4">
-                  <Sparkles className="w-5 h-5 text-primary" />
-                  <h3 className="text-lg font-semibold">AI Recommendations</h3>
-                </div>
-                <div className="space-y-2">
-                  {results.recommendations.map((recommendation, index) => (
-                    <div key={index} className="flex items-start space-x-2 p-2 bg-muted/10 rounded">
-                      <div className="mt-1">
-                        {recommendation.startsWith('✅') && <CheckCircle className="w-4 h-4 text-success" />}
-                        {recommendation.startsWith('⚠️') && <AlertTriangle className="w-4 h-4 text-warning" />}
-                        {recommendation.startsWith('🛡️') && <Shield className="w-4 h-4 text-primary" />}
-                        {(recommendation.startsWith('🔍') || recommendation.startsWith('📰') || 
-                          recommendation.startsWith('📱') || recommendation.startsWith('🎯') ||
-                          recommendation.startsWith('📉') || recommendation.startsWith('📈')) && 
-                         <Info className="w-4 h-4 text-blue-500" />}
-                      </div>
-                      <span className="text-sm">{recommendation}</span>
-                    </div>
-                  ))}
+                <h3 className="text-lg font-semibold mb-4">Source Information</h3>
+                <div className="space-y-3 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Source Name:</span>
+                    <span className="font-medium">{results.analysis.source_name || "Unknown"}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Region:</span>
+                    <span className="font-medium">{results.analysis.region || "Unknown"}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Language:</span>
+                    <span className="font-medium">{results.analysis.language || "Unknown"}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Type:</span>
+                    <span className="font-medium">{results.analysis.type || "Unknown"}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Date Analyzed:</span>
+                    <span className="font-medium">{results.analysis.date_published || "Unknown"}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Fact-Checked:</span>
+                    <span className="font-medium">
+                      {results.analysis.fact_checked ? "✅ Yes" : "❌ No"}
+                    </span>
+                  </div>
                 </div>
               </motion.div>
 
-              {/* Trusted Alternatives */}
+              {/* Credibility Reason */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.4 }}
                 className="card-glass"
               >
-                <div className="flex items-center space-x-2 mb-4">
-                  <CheckCircle className="w-5 h-5 text-success" />
-                  <h3 className="text-lg font-semibold">Trusted Sources</h3>
-                </div>
-                <div className="space-y-2 max-h-64 overflow-y-auto">
-                  {results.trustedAlternatives.map((source, index) => (
-                    <div key={index} className="text-sm p-2 bg-muted/10 rounded">
-                      {source.includes('http') ? (
-                        <a 
-                          href={source.match(/https?:\/\/[^\s]+/)?.[0] || '#'} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="text-primary hover:underline"
-                        >
-                          {source}
-                        </a>
-                      ) : (
-                        <span>{source}</span>
-                      )}
-                    </div>
-                  ))}
-                </div>
+                <h3 className="text-lg font-semibold mb-3">Credibility Assessment</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  {results.analysis.reason || "No detailed assessment available."}
+                </p>
               </motion.div>
-
-              {/* URL Details */}
-              {showVirusTotalResults && results.title && (
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.5 }}
-                  className="card-glass"
-                >
-                  <h3 className="text-lg font-semibold mb-4">URL Information</h3>
-                  <div className="space-y-3 text-sm">
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Title:</span>
-                      <span className="font-medium max-w-xs text-right truncate">{results.title}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Categories:</span>
-                      <span className="font-medium">{results.categories.join(', ') || 'N/A'}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Risk Level:</span>
-                      <span className={`font-medium ${
-                        results.riskLevel === 'low' ? 'text-success' : 
-                        results.riskLevel === 'medium' ? 'text-warning' : 'text-destructive'
-                      }`}>
-                        {results.riskLevel.toUpperCase()}
-                      </span>
-                    </div>
-                  </div>
-                </motion.div>
-              )}
 
               {/* Try Another */}
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ duration: 0.5, delay: 0.6 }}
+                transition={{ duration: 0.5, delay: 0.5 }}
               >
                 <Button
                   variant="outline"
                   onClick={() => {
                     setUrl("");
                     setResults(null);
-                    setShowVirusTotalResults(false);
-                    setError("");
                   }}
                   className="w-full glass border-primary/50 hover:bg-primary/10"
                 >
-                  Check Another URL
+                  Check Another Article
                 </Button>
               </motion.div>
             </motion.div>

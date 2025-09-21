@@ -12,16 +12,19 @@ const Homepage = () => {
       icon: Zap,
       title: "Instant Analysis",
       description: "Get comprehensive credibility scores in seconds using advanced AI algorithms",
+      gradient: "from-amber-400 to-orange-500",
     },
     {
       icon: Shield,
       title: "Real-time Protection",
       description: "Stay protected with automatic warnings for suspicious and misleading content",
+      gradient: "from-green-400 to-emerald-500",
     },
     {
       icon: Globe,
       title: "Universal Coverage",
       description: "Works seamlessly across all major news platforms and social media sites",
+      gradient: "from-blue-400 to-indigo-500",
     },
   ];
 
@@ -97,11 +100,14 @@ const Homepage = () => {
           </motion.div>
         </div>
       </section>
+          ></motion.div>
+        </motion.div>
+      </motion.div>
 
       {/* 3D Laptop Showcase */}
       <LaptopShowcase />
 
-      {/* Features Section - Modern Design */}
+      {/* Features Section */}
       <section className="py-20 px-6">
         <div className="max-w-6xl mx-auto">
           <motion.div
@@ -111,19 +117,11 @@ const Homepage = () => {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <motion.span
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              transition={{ delay: 0.2 }}
-              className="inline-block px-4 py-2 bg-primary/10 text-primary rounded-full text-sm font-medium mb-6"
-            >
-              FEATURES
-            </motion.span>
             <h2 className="text-4xl md:text-5xl font-bold mb-6">
-              <span className="gradient-text">Advanced AI Technology</span>
+              <span className="gradient-text">Powerful Features</span>
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Cutting-edge artificial intelligence meets intuitive design for the ultimate news verification experience
+              Experience the future of news verification with our advanced AI-powered platform
             </p>
           </motion.div>
 
@@ -132,7 +130,7 @@ const Homepage = () => {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
             viewport={{ once: true }}
-            className="grid md:grid-cols-3 gap-8"
+            className="grid md:grid-cols-3 gap-6"
           >
             {features.map((feature, index) => (
               <FeatureCard
@@ -147,94 +145,45 @@ const Homepage = () => {
         </div>
       </section>
 
-      {/* Modern CTA Section */}
+      {/* CTA Section */}
       <section className="py-20 px-6">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
           viewport={{ once: true }}
-          className="max-w-4xl mx-auto text-center"
+          className="max-w-4xl mx-auto text-center glass-strong rounded-3xl p-12"
         >
-          <div className="card-glass p-12 relative overflow-hidden">
-            {/* Background Pattern */}
-            <div className="absolute inset-0 opacity-5">
-              <div className="grid grid-cols-8 gap-4 h-full">
-                {Array.from({ length: 32 }).map((_, i) => (
-                  <motion.div
-                    key={i}
-                    className="bg-primary rounded-full"
-                    animate={{
-                      scale: [1, 1.2, 1],
-                      opacity: [0.3, 0.7, 0.3],
-                    }}
-                    transition={{
-                      duration: 2,
-                      delay: i * 0.1,
-                      repeat: Infinity,
-                    }}
-                  />
-                ))}
-              </div>
-            </div>
-            
-            <motion.span
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              transition={{ delay: 0.2 }}
-              className="inline-block px-4 py-2 bg-success/10 text-success rounded-full text-sm font-medium mb-6 relative z-10"
-            >
-              GET STARTED TODAY
-            </motion.span>
-            
-            <h2 className="text-3xl md:text-4xl font-bold mb-6 relative z-10">
-              Ready to Verify Your News?
-            </h2>
-            <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto relative z-10">
-              Join thousands of users who trust our AI-powered fact-checking system to stay informed with reliable news
-            </p>
+          <h2 className="text-3xl md:text-4xl font-bold mb-6">
+            Ready to Verify Your News?
+          </h2>
+          <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
+            Join thousands of users who trust our AI-powered fact-checking system
+          </p>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center relative z-10">
-              <Link to="/mobile">
-                <Button className="btn-hero group">
-                  Start Checking Now
-                  <ArrowRight className="w-5 h-5 ml-2 transition-transform group-hover:translate-x-1" />
-                </Button>
-              </Link>
-              <Link to="/extension">
-                <Button className="btn-secondary group">
-                  Download Extension
-                  <CheckCircle className="w-5 h-5 ml-2 transition-transform group-hover:scale-110" />
-                </Button>
-              </Link>
-            </div>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <Link to="/mobile">
+              <Button className="btn-hero group">
+                Start Checking Now
+                <CheckCircle className="w-5 h-5 ml-2 transition-transform group-hover:scale-110" />
+              </Button>
+            </Link>
           </div>
         </motion.div>
       </section>
 
-      {/* Modern Footer */}
-      <footer className="py-12 px-6 border-t border-border/20">
+      {/* Footer */}
+      <footer className="py-12 px-6 glass border-t border-glass-border">
         <div className="max-w-6xl mx-auto text-center">
-          <motion.div
+          <motion.p
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            className="space-y-4"
+            className="text-muted-foreground text-lg font-medium"
           >
-            <p className="text-muted-foreground font-medium">
-              Built with ❤️ for a more informed world
-            </p>
-            <p className="text-sm text-muted-foreground">
-              <a 
-                href="https://nexbitx.vercel.app/" 
-                className="gradient-text hover:opacity-80 transition-opacity duration-200 font-semibold"
-              >
-                © NexBit 2025
-              </a>
-              {" "}• Empowering truth through technology
-            </p>
-          </motion.div>
+            <a href="https://nexbitx.vercel.app/" className="gradient-text shadow-grey/400">&copy;NexBit</a> 2025 Build
+          </motion.p>
         </div>
       </footer>
     </div>

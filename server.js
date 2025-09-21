@@ -87,8 +87,65 @@ app.post('/scan', async (req, res) => {
       });
     }
 
-    // If not found, fallback to previous logic (Groq or error)
-    return res.status(404).json({ error: 'Source not found in trusted list.' });
+    // If not found, use Groq API for real analysis
+    if (GROQ_API_KEY) {
+      console.log('Source not in database, using Groq API for analysis...');
+      
+      try {
+        const groqResponse = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${GROQ_API_KEY}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            model: GROQ_MODEL,
+            messages: [
+              {
+                role: 'system',
+                content: 'You are a news credibility analyzer. Analyze the given URL/domain and provide a credibility score (0-100), credibility level (high/medium/low), source information, and reasoning. Respond in JSON format with fields: credibility_score, credibility_level, source_name, region, language, type, fact_checked (boolean), reason.'
+              },
+              {
+                role: 'user',
+                content: `Please analyze the credibility of this news source: ${url}\nDomain: ${domain}\nProvide credibility assessment focusing on the source's reputation, editorial standards, and reliability.`
+              }
+            ],
+            temperature: 0.3,
+            max_tokens: 500
+          })
+        });
+
+        if (!groqResponse.ok) {
+          throw new Error(`Groq API error: ${groqResponse.status}`);
+        }
+
+        const groqData = await groqResponse.json();
+        const analysis = JSON.parse(groqData.choices[0].message.content);
+        
+        // Get current date
+        const currentDate = new Date().toISOString().split('T')[0];
+        
+        return res.json({
+          credibility: analysis.credibility_level,
+          score: analysis.credibility_score,
+          analysis: {
+            source_name: analysis.source_name || domain,
+            region: analysis.region || 'Unknown',
+            language: analysis.language || 'Unknown',
+            type: analysis.type || 'Online News',
+            date_published: currentDate,
+            fact_checked: analysis.fact_checked || false,
+            reason: analysis.reason || 'AI-powered credibility analysis'
+          }
+        });
+        
+      } catch (groqError) {
+        console.error('Groq API error:', groqError);
+        // Fall through to 404 error
+      }
+    }
+
+    return res.status(404).json({ error: 'Source not found in trusted list and AI analysis unavailable.' });
   } catch (err) {
     res.status(500).json({ error: 'Failed to process request.' });
   }
