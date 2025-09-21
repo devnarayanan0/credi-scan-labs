@@ -12,7 +12,263 @@ const factChecked = document.getElementById("fact-checked");
 const statusValue = document.getElementById("status-value");
 const credibilityCard = document.getElementById("credibility-card");
 
-// Utility function to extract domain from URL
+// Complete news sources database (from public/mock/data.json)
+const NEWS_SOURCES_DATA = {
+  "news_sources": [
+    {
+      "source_name": "The New York Times",
+      "region": "US",
+      "language": "English",
+      "type": "Newspaper + Online",
+      "credibility_score": 90,
+      "fact_checked": true,
+      "reason": "Strong editorial standards and fact-checking",
+      "domain": "nytimes.com"
+    },
+    {
+      "source_name": "BBC News",
+      "region": "UK",
+      "language": "English",
+      "type": "Broadcast + Online",
+      "credibility_score": 88,
+      "fact_checked": true,
+      "reason": "Globally trusted public broadcaster",
+      "domain": "bbc.co.uk"
+    },
+    {
+      "source_name": "Reuters",
+      "region": "Global",
+      "language": "English",
+      "type": "Wire Service",
+      "credibility_score": 92,
+      "fact_checked": true,
+      "reason": "Wire service with strict sourcing",
+      "domain": "reuters.com"
+    },
+    {
+      "source_name": "Associated Press (AP)",
+      "region": "US",
+      "language": "English",
+      "type": "Wire Service",
+      "credibility_score": 91,
+      "fact_checked": true,
+      "reason": "Reliable news agency cited worldwide",
+      "domain": "apnews.com"
+    },
+    {
+      "source_name": "The Wall Street Journal",
+      "region": "US",
+      "language": "English",
+      "type": "Newspaper + Online",
+      "credibility_score": 87,
+      "fact_checked": true,
+      "reason": "Strong business reporting and standards",
+      "domain": "wsj.com"
+    },
+    {
+      "source_name": "The Washington Post",
+      "region": "US",
+      "language": "English",
+      "type": "Newspaper + Online",
+      "credibility_score": 86,
+      "fact_checked": true,
+      "reason": "Investigative reporting and editorial oversight",
+      "domain": "washingtonpost.com"
+    },
+    {
+      "source_name": "The Guardian",
+      "region": "UK",
+      "language": "English",
+      "type": "Newspaper + Online",
+      "credibility_score": 85,
+      "fact_checked": true,
+      "reason": "Investigative journalism, established outlet",
+      "domain": "theguardian.com"
+    },
+    {
+      "source_name": "Bloomberg",
+      "region": "Global",
+      "language": "English",
+      "type": "News Agency / Financial",
+      "credibility_score": 88,
+      "fact_checked": true,
+      "reason": "Respected financial news organization",
+      "domain": "bloomberg.com"
+    },
+    {
+      "source_name": "Financial Times",
+      "region": "UK",
+      "language": "English",
+      "type": "Newspaper + Online",
+      "credibility_score": 87,
+      "fact_checked": true,
+      "reason": "Reputable business journalism",
+      "domain": "ft.com"
+    },
+    {
+      "source_name": "The Economist",
+      "region": "UK",
+      "language": "English",
+      "type": "Magazine",
+      "credibility_score": 89,
+      "fact_checked": true,
+      "reason": "In-depth analysis and editorial standards",
+      "domain": "economist.com"
+    },
+    {
+      "source_name": "New York Post",
+      "region": "US",
+      "language": "English",
+      "type": "Newspaper + Online",
+      "credibility_score": 60,
+      "fact_checked": false,
+      "reason": "Tabloid style, sensational headlines",
+      "domain": "nypost.com"
+    },
+    {
+      "source_name": "Daily Mail (MailOnline)",
+      "region": "UK",
+      "language": "English",
+      "type": "Online Tabloid",
+      "credibility_score": 55,
+      "fact_checked": false,
+      "reason": "High reach but frequent sensationalism",
+      "domain": "dailymail.co.uk"
+    },
+    {
+      "source_name": "The Times (UK)",
+      "region": "UK",
+      "language": "English",
+      "type": "Newspaper + Online",
+      "credibility_score": 80,
+      "fact_checked": true,
+      "reason": "Established national newspaper",
+      "domain": "thetimes.co.uk"
+    },
+    {
+      "source_name": "The Independent",
+      "region": "UK",
+      "language": "English",
+      "type": "Online Newspaper",
+      "credibility_score": 77,
+      "fact_checked": true,
+      "reason": "Independent reporting, online-focused",
+      "domain": "independent.co.uk"
+    },
+    {
+      "source_name": "Al Jazeera",
+      "region": "Qatar/Global",
+      "language": "English/Arabic",
+      "type": "Broadcast + Online",
+      "credibility_score": 82,
+      "fact_checked": true,
+      "reason": "Extensive international coverage, regional perspective",
+      "domain": "aljazeera.com"
+    },
+    {
+      "source_name": "CNN",
+      "region": "US",
+      "language": "English",
+      "type": "Broadcast + Online",
+      "credibility_score": 78,
+      "fact_checked": false,
+      "reason": "Large reach, mixed editorial quality at times",
+      "domain": "cnn.com"
+    },
+    {
+      "source_name": "NBC News",
+      "region": "US",
+      "language": "English",
+      "type": "Broadcast + Online",
+      "credibility_score": 79,
+      "fact_checked": true,
+      "reason": "Major US broadcaster with standards",
+      "domain": "nbcnews.com"
+    },
+    {
+      "source_name": "CBS News",
+      "region": "US",
+      "language": "English",
+      "type": "Broadcast + Online",
+      "credibility_score": 78,
+      "fact_checked": true,
+      "reason": "Longstanding broadcast news outlet",
+      "domain": "cbsnews.com"
+    },
+    {
+      "source_name": "ABC News (Australia)",
+      "region": "Australia",
+      "language": "English",
+      "type": "Broadcast + Online",
+      "credibility_score": 86,
+      "fact_checked": true,
+      "reason": "Public broadcaster with editorial oversight",
+      "domain": "abc.net.au"
+    },
+    {
+      "source_name": "The Hindu",
+      "region": "India",
+      "language": "English",
+      "type": "Newspaper + Online",
+      "credibility_score": 81,
+      "fact_checked": true,
+      "reason": "Respected Indian national newspaper",
+      "domain": "thehindu.com"
+    },
+    {
+      "source_name": "Times of India",
+      "region": "India",
+      "language": "English",
+      "type": "Newspaper + Online",
+      "credibility_score": 76,
+      "fact_checked": false,
+      "reason": "Very high reach but sometimes sensational headlines",
+      "domain": "timesofindia.indiatimes.com"
+    },
+    {
+      "source_name": "Indian Express",
+      "region": "India",
+      "language": "English",
+      "type": "Newspaper + Online",
+      "credibility_score": 79,
+      "fact_checked": true,
+      "reason": "Investigative reporting and editorials",
+      "domain": "indianexpress.com"
+    },
+    {
+      "source_name": "Hindustan Times",
+      "region": "India",
+      "language": "English",
+      "type": "Newspaper + Online",
+      "credibility_score": 75,
+      "fact_checked": false,
+      "reason": "Popular national outlet, mixed depth",
+      "domain": "hindustantimes.com"
+    },
+    {
+      "source_name": "NDTV",
+      "region": "India",
+      "language": "English/Hindi",
+      "type": "Broadcast + Online",
+      "credibility_score": 74,
+      "fact_checked": false,
+      "reason": "Large broadcaster, variable editorial quality",
+      "domain": "ndtv.com"
+    },
+    {
+      "source_name": "India Today",
+      "region": "India",
+      "language": "English/Hindi",
+      "type": "Magazine + Online",
+      "credibility_score": 72,
+      "fact_checked": false,
+      "reason": "Popular news magazine, mixed rigor",
+      "domain": "indiatoday.in"
+    }
+  ]
+};
+
+// Extract domain from URL (same logic as server)
 function extractDomain(url) {
   try {
     const urlObj = new URL(url);
@@ -30,6 +286,52 @@ function extractDomain(url) {
   } catch (error) {
     return '';
   }
+}
+
+// Analyze credibility using embedded data
+function analyzeCredibility(url) {
+  const domain = extractDomain(url);
+  
+  if (!domain) {
+    return null;
+  }
+  
+  // Find matching source
+  const sourceMatch = NEWS_SOURCES_DATA.news_sources.find(src => {
+    const jsonDomain = extractDomain(src.domain || '');
+    return domain === jsonDomain;
+  });
+  
+  if (sourceMatch) {
+    // Convert credibility score to category
+    let credibilityCategory;
+    if (sourceMatch.credibility_score >= 85) {
+      credibilityCategory = "high";
+    } else if (sourceMatch.credibility_score >= 70) {
+      credibilityCategory = "medium";
+    } else {
+      credibilityCategory = "low";
+    }
+
+    // Get current date
+    const currentDate = new Date().toISOString().split('T')[0];
+
+    return {
+      credibility: credibilityCategory,
+      score: sourceMatch.credibility_score,
+      analysis: {
+        source_name: sourceMatch.source_name,
+        region: sourceMatch.region,
+        language: sourceMatch.language,
+        type: sourceMatch.type,
+        date_published: currentDate,
+        fact_checked: sourceMatch.fact_checked,
+        reason: sourceMatch.reason
+      }
+    };
+  }
+  
+  return null;
 }
 
 // Update UI based on credibility score
@@ -98,13 +400,13 @@ function hideLoading() {
 
 // Main scan function
 scanBtn.addEventListener("click", async () => {
-  console.log('Scan button clicked!'); // Debug log
+  console.log('Scan button clicked!');
   showLoading();
   
   try {
     // Get active tab
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-    console.log('Current tab:', tab.url); // Debug log
+    console.log('Current tab:', tab.url);
     
     if (!tab.url || tab.url.startsWith('chrome://') || tab.url.startsWith('chrome-extension://') || tab.url.startsWith('moz-extension://')) {
       statusMessage.textContent = 'Cannot scan this type of page';
@@ -112,9 +414,9 @@ scanBtn.addEventListener("click", async () => {
       return;
     }
 
-    // Extract domain and check against our API
+    // Extract domain and analyze using embedded data
     const domain = extractDomain(tab.url);
-    console.log('Extracted domain:', domain); // Debug log
+    console.log('Extracted domain:', domain);
     
     if (!domain) {
       statusMessage.textContent = 'Could not extract domain from URL';
@@ -122,87 +424,34 @@ scanBtn.addEventListener("click", async () => {
       return;
     }
 
-    statusMessage.textContent = `Checking ${domain}...`;
+    statusMessage.textContent = `Analyzing ${domain}...`;
 
-    // Try to call our local API
-    try {
-      const response = await fetch('http://localhost:4000/scan', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ url: tab.url })
-      });
-
-      console.log('API Response status:', response.status); // Debug log
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        statusMessage.textContent = errorData.error || 'Source not found in trusted list';
-        hideLoading();
-        return;
-      }
-
-      const data = await response.json();
-      console.log('API Response data:', data); // Debug log
+    // Use embedded credibility data
+    const credibilityData = analyzeCredibility(tab.url);
+    
+    if (credibilityData) {
+      console.log('Credibility data found:', credibilityData);
       
-      if (data.score && data.analysis) {
-        updateCredibilityUI(data.score, data.analysis);
-      } else {
-        statusMessage.textContent = 'Invalid response from server';
-      }
-    } catch (fetchError) {
-      console.log('API call failed, using demo mode:', fetchError);
-      
-      // Demo mode - show sample data
-      const demoData = {
-        score: Math.floor(Math.random() * 40) + 60, // Random score between 60-100
-        analysis: {
-          source_name: 'Demo Source',
-          region: 'Global',
-          language: 'English',
-          type: 'Online News',
-          date_published: new Date().toISOString().split('T')[0],
-          fact_checked: Math.random() > 0.5,
-          reason: 'Demo mode - Server not available'
-        }
-      };
-      
-      statusMessage.textContent = 'Demo mode: Server not available';
+      // Simulate analysis delay for better UX
       setTimeout(() => {
-        updateCredibilityUI(demoData.score, demoData.analysis);
-      }, 1000);
+        updateCredibilityUI(credibilityData.score, credibilityData.analysis);
+        hideLoading();
+      }, 1500);
+    } else {
+      statusMessage.textContent = `${domain} not found in trusted sources database`;
+      hideLoading();
     }
 
   } catch (error) {
     console.error('Extension error:', error);
     statusMessage.textContent = `Error: ${error.message}`;
-  } finally {
     hideLoading();
   }
 });
 
-// Test server connectivity
-async function testServerConnection() {
-  try {
-    const response = await fetch('http://localhost:4000/', {
-      method: 'GET',
-    });
-    if (response.ok) {
-      console.log('Server is running and accessible');
-      return true;
-    }
-  } catch (error) {
-    console.error('Server connection failed:', error);
-    statusMessage.textContent = 'Server not running. Please start the backend server.';
-    return false;
-  }
-  return false;
-}
-
 // Initialize UI on popup open
-document.addEventListener('DOMContentLoaded', async () => {
-  console.log('DOM loaded, initializing extension...'); // Debug log
+document.addEventListener('DOMContentLoaded', () => {
+  console.log('News Credibility Checker Extension loaded');
   
   // Check if button exists
   if (!scanBtn) {
@@ -210,14 +459,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     return;
   }
   
-  console.log('Scan button found:', scanBtn); // Debug log
+  console.log('Extension initialized with', NEWS_SOURCES_DATA.news_sources.length, 'news sources');
   resetUI();
-  
-  // Test server connection
-  await testServerConnection();
-  
-  // Test button click
-  scanBtn.addEventListener('mouseover', () => {
-    console.log('Button hover detected'); // Debug log
-  });
 });
