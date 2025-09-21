@@ -398,9 +398,55 @@ function hideLoading() {
   scanBtn.innerHTML = '<span class="button-icon">⚡</span><span class="button-text">Scan This Page</span>';
 }
 
-// Main scan function
-scanBtn.addEventListener("click", async () => {
+// Initialize UI on popup open
+document.addEventListener('DOMContentLoaded', () => {
+  console.log('News Credibility Checker Extension loaded');
+  
+  // Debug: Check all elements
+  console.log('scanBtn:', scanBtn);
+  console.log('statusMessage:', statusMessage);
+  console.log('scoreText:', scoreText);
+  
+  // Check if button exists
+  if (!scanBtn) {
+    console.error('Scan button not found!');
+    // Try to find button by class name as fallback
+    const buttonByClass = document.querySelector('.scan-button');
+    console.log('Button by class:', buttonByClass);
+    return;
+  }
+  
+  console.log('Extension initialized with', NEWS_SOURCES_DATA.news_sources.length, 'news sources');
+  resetUI();
+  
+  // Add click event listener to scan button
+  scanBtn.addEventListener("click", handleScanClick);
+  
+  // Also add event listener using different method as backup
+  scanBtn.onclick = handleScanClick;
+  
+  // Test button functionality
+  console.log('Button element:', scanBtn);
+  console.log('Button click handler attached');
+  
+  // Add a test button click after 2 seconds for debugging
+  setTimeout(() => {
+    console.log('Testing button functionality...');
+    if (scanBtn) {
+      console.log('Button is accessible after timeout');
+    }
+  }, 2000);
+});
+
+// Separate function for handling scan clicks
+async function handleScanClick() {
   console.log('Scan button clicked!');
+  
+  // Simple test first
+  if (statusMessage) {
+    statusMessage.textContent = 'Button clicked - testing...';
+  }
+  
   showLoading();
   
   try {
@@ -447,18 +493,4 @@ scanBtn.addEventListener("click", async () => {
     statusMessage.textContent = `Error: ${error.message}`;
     hideLoading();
   }
-});
-
-// Initialize UI on popup open
-document.addEventListener('DOMContentLoaded', () => {
-  console.log('News Credibility Checker Extension loaded');
-  
-  // Check if button exists
-  if (!scanBtn) {
-    console.error('Scan button not found!');
-    return;
-  }
-  
-  console.log('Extension initialized with', NEWS_SOURCES_DATA.news_sources.length, 'news sources');
-  resetUI();
-});
+}

@@ -15,69 +15,37 @@ export const ExtensionCard = ({ onInstall }: ExtensionCardProps) => {
 
   const handleDownload = async () => {
     setIsDownloading(true);
-    
-    // Always try demo mode first to ensure it works
     console.log('Starting download process...');
     
     try {
       const apiBaseUrl = getApiBaseUrl();
       
-      if (apiBaseUrl) {
-        // Try to use the real API (local development)
-        console.log('Attempting to connect to local server...');
-        
-        try {
-          const testResponse = await fetch(`${apiBaseUrl}/test`, { 
-            method: 'GET',
-            signal: AbortSignal.timeout(5000) // 5 second timeout
-          });
-          
-          if (testResponse.ok) {
-            console.log('Server accessible, downloading extension...');
-            const response = await fetch(`${apiBaseUrl}/download-extension`, {
-              signal: AbortSignal.timeout(10000) // 10 second timeout
-            });
-            
-            if (response.ok) {
-              const blob = await response.blob();
-              if (blob.size > 0) {
-                console.log('Real download successful, file size:', blob.size, 'bytes');
-                
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = 'NEXBITCred.zip';
-                document.body.appendChild(a);
-                a.click();
-                window.URL.revokeObjectURL(url);
-                document.body.removeChild(a);
-                
-                // Show success effects
-                setShowConfetti(true);
-                setShowInstructions(true);
-                setTimeout(() => setShowConfetti(false), 3000);
-                onInstall?.();
-                return; // Success, exit early
-              }
-            }
-          }
-        } catch (apiError) {
-          console.log('API request failed:', apiError.message);
-        }
+      if (!apiBaseUrl) {
+        throw new Error('Backend server not available. Please ensure the server is running on localhost:4000');
       }
+
+      // Call the backend API to download the actual extension zip
+      const response = await fetch(`${apiBaseUrl}/download-extension`);
       
-      // If we reach here, either no API or API failed - use demo mode
-      console.log('Using demo mode for extension download');
-      const blob = await createDemoExtensionZip();
+      if (!response.ok) {
+        throw new Error(`Download failed: ${response.status} ${response.statusText}`);
+      }
+
+      // Get the zip file as blob
+      const blob = await response.blob();
       
+      // Create download link
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'NEXBITCred-Demo.txt';
+      a.download = 'NEXBITCred.zip';
+      a.style.display = 'none';
       document.body.appendChild(a);
       a.click();
-      window.URL.revokeObjectURL(url);
       document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+      
+      console.log('Extension zip download successful');
       
       // Show success effects
       setShowConfetti(true);
@@ -85,14 +53,14 @@ export const ExtensionCard = ({ onInstall }: ExtensionCardProps) => {
       setTimeout(() => setShowConfetti(false), 3000);
       onInstall?.();
       
-      // Inform user about demo mode
+      // Success message
       setTimeout(() => {
-        alert('Demo Mode: Downloaded demo file with installation instructions.\n\nThis demonstrates the download functionality. In a production environment with a backend server, you would receive the actual extension files.');
+        alert('✅ Extension Downloaded Successfully!\n\nNEXBITCred.zip has been downloaded to your Downloads folder.\n\nFollow the installation instructions to load it in Chrome Developer Mode.');
       }, 500);
       
     } catch (error) {
-      console.error('Download process failed:', error);
-      alert('Download failed. Please try again later.');
+      console.error('Download failed:', error);
+      alert(`❌ Download failed: ${error.message}\n\nPlease ensure:\n1. Backend server is running on localhost:4000\n2. Extension files exist in GC/extension folder\n3. Try refreshing the page`);
     } finally {
       setIsDownloading(false);
     }
@@ -292,7 +260,7 @@ export const ExtensionCard = ({ onInstall }: ExtensionCardProps) => {
                 <div>
                   <p className="text-sm text-warning font-medium mb-1">Important Note</p>
                   <p className="text-xs text-warning">
-                    Make sure the backend server is running on localhost:4000 for the extension to work properly.
+                    Make sure the backend server is running on localhost:4000 for the download to work properly.
                   </p>
                 </div>
               </div>

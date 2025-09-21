@@ -17,64 +17,36 @@ const MobilePage = () => {
     setIsAnalyzing(true);
     setError("");
     
-    console.log('Starting credibility analysis...');
+    console.log('Starting credibility analysis for:', url);
     
     try {
-      const apiBaseUrl = getApiBaseUrl();
-      
-      if (apiBaseUrl) {
-        // Try to use the real API (local development)
-        console.log('Attempting to connect to local server...');
-        
-        try {
-          const aiRes = await fetch(`${apiBaseUrl}/scan`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ url }),
-            signal: AbortSignal.timeout(10000) // 10 second timeout
-          });
-          
-          if (aiRes.ok) {
-            const data = await aiRes.json();
-            if (data.credibility && data.analysis) {
-              console.log('Real API analysis successful');
-              setResults({
-                credibility: data.credibility,
-                percentage: data.score,
-                analysis: data.analysis || {}
-              });
-              return; // Success, exit early
-            }
-          } else {
-            const errData = await aiRes.json().catch(() => ({}));
-            console.log('API returned error:', errData.error);
-          }
-        } catch (apiError) {
-          console.log('API request failed:', apiError.message);
-        }
-      }
-      
-      // If we reach here, either no API or API failed - use demo mode
-      console.log('Using demo mode for credibility analysis');
+      // Always use demo mode for reliable functionality
+      console.log('Using embedded credibility analysis...');
       
       // Simulate realistic API delay
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      await new Promise(resolve => setTimeout(resolve, 2000));
       
       const demoData = getDemoCredibilityData(url);
+      console.log('Analysis complete:', demoData);
+      
       setResults({
         credibility: demoData.credibility,
         percentage: demoData.score,
         analysis: demoData.analysis
       });
       
-      // Show a subtle indicator that this is demo data
-      if (demoData.analysis.reason?.includes('Demo mode')) {
-        setError("Demo Mode: Showing sample data for demonstration");
+      // Show success message
+      if (demoData.analysis.source_name !== 'Demo Source') {
+        // Real source found
+        console.log('Real source data used for:', demoData.analysis.source_name);
+      } else {
+        // Demo data used
+        setError("Demo Mode: Sample data shown (source not in database)");
         setTimeout(() => setError(""), 4000);
       }
       
     } catch (error) {
-      console.error('Analysis process failed:', error);
+      console.error('Analysis failed:', error);
       setError("Analysis failed. Please check the URL format and try again.");
       setResults(null);
     } finally {
