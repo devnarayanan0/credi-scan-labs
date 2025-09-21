@@ -33,6 +33,16 @@ const NEWS_SOURCES_DATA = {
       "credibility_score": 88,
       "fact_checked": true,
       "reason": "Globally trusted public broadcaster",
+      "domain": "bbc.com"
+    },
+    {
+      "source_name": "BBC News",
+      "region": "UK",
+      "language": "English",
+      "type": "Broadcast + Online",
+      "credibility_score": 88,
+      "fact_checked": true,
+      "reason": "Globally trusted public broadcaster",
       "domain": "bbc.co.uk"
     },
     {
@@ -284,6 +294,7 @@ function extractDomain(url) {
     const parts = domain.split('.');
     return parts.slice(-2).join('.');
   } catch (error) {
+    console.error('Error extracting domain:', error);
     return '';
   }
 }
@@ -291,16 +302,45 @@ function extractDomain(url) {
 // Analyze credibility using embedded data
 function analyzeCredibility(url) {
   const domain = extractDomain(url);
+  console.log('Analyzing URL:', url);
+  console.log('Extracted domain:', domain);
   
   if (!domain) {
+    console.log('No domain extracted');
     return null;
   }
   
-  // Find matching source
-  const sourceMatch = NEWS_SOURCES_DATA.news_sources.find(src => {
-    const jsonDomain = extractDomain(src.domain || '');
-    return domain === jsonDomain;
+  // Find matching source - try multiple matching strategies
+  let sourceMatch = null;
+  
+  // Strategy 1: Exact domain match
+  sourceMatch = NEWS_SOURCES_DATA.news_sources.find(src => {
+    const srcDomain = src.domain || '';
+    console.log('Comparing:', domain, 'with', srcDomain);
+    return domain === srcDomain;
   });
+  
+  // Strategy 2: If no exact match, try extracting domain from source data
+  if (!sourceMatch) {
+    sourceMatch = NEWS_SOURCES_DATA.news_sources.find(src => {
+      const srcDomain = extractDomain('https://' + (src.domain || ''));
+      console.log('Comparing extracted:', domain, 'with extracted:', srcDomain);
+      return domain === srcDomain;
+    });
+  }
+  
+  // Strategy 3: Try partial matching (contains)
+  if (!sourceMatch) {
+    sourceMatch = NEWS_SOURCES_DATA.news_sources.find(src => {
+      const srcDomain = src.domain || '';
+      const domainBase = domain.split('.')[0]; // Get base domain (e.g., 'bbc' from 'bbc.com')
+      const srcBase = srcDomain.split('.')[0];
+      console.log('Comparing base domains:', domainBase, 'with', srcBase);
+      return domainBase === srcBase;
+    });
+  }
+  
+  console.log('Source match found:', sourceMatch);
   
   if (sourceMatch) {
     // Convert credibility score to category
@@ -331,6 +371,7 @@ function analyzeCredibility(url) {
     };
   }
   
+  console.log('No source match found for domain:', domain);
   return null;
 }
 
@@ -339,63 +380,69 @@ function updateCredibilityUI(score, analysis) {
   const numScore = parseInt(score);
   
   // Update score display
-  scoreText.textContent = `${numScore}%`;
-  scoreProgress.style.width = `${numScore}%`;
+  if (scoreText) scoreText.textContent = `${numScore}%`;
+  if (scoreProgress) scoreProgress.style.width = `${numScore}%`;
   
   // Update card styling based on score
-  credibilityCard.className = 'credibility-card';
-  if (numScore >= 85) {
-    credibilityCard.classList.add('success');
-    statusValue.textContent = '✓ Verified';
-  } else if (numScore >= 70) {
-    credibilityCard.classList.add('warning');
-    statusValue.textContent = '⚠️ Mixed';
-  } else {
-    credibilityCard.classList.add('danger');
-    statusValue.textContent = '❌ Questionable';
+  if (credibilityCard) {
+    credibilityCard.className = 'credibility-card';
+    if (numScore >= 85) {
+      credibilityCard.classList.add('success');
+      if (statusValue) statusValue.textContent = '✓ Verified';
+    } else if (numScore >= 70) {
+      credibilityCard.classList.add('warning');
+      if (statusValue) statusValue.textContent = '⚠️ Mixed';
+    } else {
+      credibilityCard.classList.add('danger');
+      if (statusValue) statusValue.textContent = '❌ Questionable';
+    }
   }
   
   // Update details
   if (analysis) {
-    sourceName.textContent = analysis.source_name || 'Unknown';
-    region.textContent = analysis.region || 'Unknown';
-    language.textContent = analysis.language || 'Unknown';
-    type.textContent = analysis.type || 'Unknown';
-    dateAnalyzed.textContent = analysis.date_published || 'Unknown';
-    factChecked.textContent = analysis.fact_checked ? '✓ Yes' : '❌ No';
-    statusMessage.textContent = analysis.reason || 'Analysis complete';
+    if (sourceName) sourceName.textContent = analysis.source_name || 'Unknown';
+    if (region) region.textContent = analysis.region || 'Unknown';
+    if (language) language.textContent = analysis.language || 'Unknown';
+    if (type) type.textContent = analysis.type || 'Unknown';
+    if (dateAnalyzed) dateAnalyzed.textContent = analysis.date_published || 'Unknown';
+    if (factChecked) factChecked.textContent = analysis.fact_checked ? '✓ Yes' : '❌ No';
+    if (statusMessage) statusMessage.textContent = analysis.reason || 'Analysis complete';
   }
 }
 
 // Reset UI to initial state
 function resetUI() {
-  scoreText.textContent = '--%';
-  scoreProgress.style.width = '0%';
-  sourceName.textContent = '--';
-  region.textContent = '--';
-  language.textContent = '--';
-  type.textContent = '--';
-  dateAnalyzed.textContent = '--';
-  factChecked.textContent = '--';
-  statusValue.textContent = 'Ready';
-  statusMessage.textContent = 'Ready to scan this page for credibility';
-  credibilityCard.className = 'credibility-card';
+  if (scoreText) scoreText.textContent = '--%';
+  if (scoreProgress) scoreProgress.style.width = '0%';
+  if (sourceName) sourceName.textContent = '--';
+  if (region) region.textContent = '--';
+  if (language) language.textContent = '--';
+  if (type) type.textContent = '--';
+  if (dateAnalyzed) dateAnalyzed.textContent = '--';
+  if (factChecked) factChecked.textContent = '--';
+  if (statusValue) statusValue.textContent = 'Ready';
+  if (statusMessage) statusMessage.textContent = 'Ready to scan this page for credibility';
+  if (credibilityCard) credibilityCard.className = 'credibility-card';
 }
 
 // Show loading state
 function showLoading() {
-  scanBtn.classList.add('loading');
-  scanBtn.disabled = true;
-  scanBtn.innerHTML = '<span class="button-icon">⏳</span><span class="button-text">Scanning...</span>';
-  statusMessage.textContent = 'Analyzing page credibility...';
-  statusValue.textContent = 'Scanning';
+  if (scanBtn) {
+    scanBtn.classList.add('loading');
+    scanBtn.disabled = true;
+    scanBtn.innerHTML = '<span class="button-icon">⏳</span><span class="button-text">Scanning...</span>';
+  }
+  if (statusMessage) statusMessage.textContent = 'Analyzing page credibility...';
+  if (statusValue) statusValue.textContent = 'Scanning';
 }
 
 // Hide loading state
 function hideLoading() {
-  scanBtn.classList.remove('loading');
-  scanBtn.disabled = false;
-  scanBtn.innerHTML = '<span class="button-icon">⚡</span><span class="button-text">Scan This Page</span>';
+  if (scanBtn) {
+    scanBtn.classList.remove('loading');
+    scanBtn.disabled = false;
+    scanBtn.innerHTML = '<span class="button-icon">⚡</span><span class="button-text">Scan This Page</span>';
+  }
 }
 
 // Initialize UI on popup open
@@ -407,35 +454,31 @@ document.addEventListener('DOMContentLoaded', () => {
   console.log('statusMessage:', statusMessage);
   console.log('scoreText:', scoreText);
   
-  // Check if button exists
+  // Check if required elements exist
   if (!scanBtn) {
     console.error('Scan button not found!');
-    // Try to find button by class name as fallback
-    const buttonByClass = document.querySelector('.scan-button');
-    console.log('Button by class:', buttonByClass);
+    return;
+  }
+  
+  if (!statusMessage) {
+    console.error('Status message element not found!');
     return;
   }
   
   console.log('Extension initialized with', NEWS_SOURCES_DATA.news_sources.length, 'news sources');
+  
+  // Debug: Log all available domains
+  console.log('Available domains in database:');
+  NEWS_SOURCES_DATA.news_sources.forEach(src => {
+    console.log('-', src.domain, '(', src.source_name, ')');
+  });
+  
   resetUI();
   
   // Add click event listener to scan button
   scanBtn.addEventListener("click", handleScanClick);
   
-  // Also add event listener using different method as backup
-  scanBtn.onclick = handleScanClick;
-  
-  // Test button functionality
-  console.log('Button element:', scanBtn);
-  console.log('Button click handler attached');
-  
-  // Add a test button click after 2 seconds for debugging
-  setTimeout(() => {
-    console.log('Testing button functionality...');
-    if (scanBtn) {
-      console.log('Button is accessible after timeout');
-    }
-  }, 2000);
+  console.log('Extension ready - button click handler attached');
 });
 
 // Separate function for handling scan clicks
@@ -444,7 +487,7 @@ async function handleScanClick() {
   
   // Simple test first
   if (statusMessage) {
-    statusMessage.textContent = 'Button clicked - testing...';
+    statusMessage.textContent = 'Button clicked - starting scan...';
   }
   
   showLoading();
@@ -455,7 +498,7 @@ async function handleScanClick() {
     console.log('Current tab:', tab.url);
     
     if (!tab.url || tab.url.startsWith('chrome://') || tab.url.startsWith('chrome-extension://') || tab.url.startsWith('moz-extension://')) {
-      statusMessage.textContent = 'Cannot scan this type of page';
+      if (statusMessage) statusMessage.textContent = 'Cannot scan this type of page';
       hideLoading();
       return;
     }
@@ -465,12 +508,12 @@ async function handleScanClick() {
     console.log('Extracted domain:', domain);
     
     if (!domain) {
-      statusMessage.textContent = 'Could not extract domain from URL';
+      if (statusMessage) statusMessage.textContent = 'Could not extract domain from URL';
       hideLoading();
       return;
     }
 
-    statusMessage.textContent = `Analyzing ${domain}...`;
+    if (statusMessage) statusMessage.textContent = `Analyzing ${domain}...`;
 
     // Use embedded credibility data
     const credibilityData = analyzeCredibility(tab.url);
@@ -484,13 +527,13 @@ async function handleScanClick() {
         hideLoading();
       }, 1500);
     } else {
-      statusMessage.textContent = `${domain} not found in trusted sources database`;
+      if (statusMessage) statusMessage.textContent = `${domain} not found in trusted sources database`;
       hideLoading();
     }
 
   } catch (error) {
     console.error('Extension error:', error);
-    statusMessage.textContent = `Error: ${error.message}`;
+    if (statusMessage) statusMessage.textContent = `Error: ${error.message}`;
     hideLoading();
   }
 }

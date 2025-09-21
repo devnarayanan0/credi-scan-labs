@@ -53,14 +53,9 @@ export const ExtensionCard = ({ onInstall }: ExtensionCardProps) => {
       setTimeout(() => setShowConfetti(false), 3000);
       onInstall?.();
       
-      // Success message
-      setTimeout(() => {
-        alert('✅ Extension Downloaded Successfully!\n\nNEXBITCred.zip has been downloaded to your Downloads folder.\n\nFollow the installation instructions to load it in Chrome Developer Mode.');
-      }, 500);
-      
     } catch (error) {
       console.error('Download failed:', error);
-      alert(`❌ Download failed: ${error.message}\n\nPlease ensure:\n1. Backend server is running on localhost:4000\n2. Extension files exist in GC/extension folder\n3. Try refreshing the page`);
+      // Error will be shown in console, no alert needed
     } finally {
       setIsDownloading(false);
     }
